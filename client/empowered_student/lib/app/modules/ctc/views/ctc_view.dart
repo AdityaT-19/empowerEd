@@ -4,6 +4,7 @@ import 'package:empowered_student/app/modules/ctc/controllers/ctc_controller.dar
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CtcView extends StatefulWidget {
   @override
@@ -28,7 +29,6 @@ class CtcView extends StatefulWidget {
 all are boolean values
 */
 class _CtcView extends State<CtcView> {
-  final student = Student(dept: "CSE", name: "Vinod", cgpa: 9.79);
   final _formKey = GlobalKey<FormState>();
   int noOfDsa = 0;
   bool knowsMl = false;
@@ -166,11 +166,22 @@ class _CtcView extends State<CtcView> {
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
                         _formKey.currentState!.save();
-                        final int branch = student.dept == 'CSE'
+                        final prefs = await SharedPreferences.getInstance();
+                        final usn = prefs.getString('usn');
+                        final urls = Uri.parse(
+                            'https://empowered-dw0m.onrender.com/api/v1/student/$usn');
+
+                        final responses = await http.get(urls);
+                        final bodys = jsonDecode(responses.body);
+                        final student = bodys['data'][0];
+                        print(student);
+                        final int branch = student['dept'] ==
+                                'Computer Science And Engineering'
                             ? 0
-                            : student.dept == 'EEE'
+                            : student['dept'] ==
+                                    'Information Science And Engineering'
                                 ? 2
-                                : student.dept == 'MECH'
+                                : student['dept'] == 'Mechanical Engineering'
                                     ? 1
                                     : 3;
                         final data = {
@@ -182,13 +193,13 @@ class _CtcView extends State<CtcView> {
                           'knows_html': knowsHtml ? 1 : 0,
                           'knows_css': knowsCss ? 1 : 0,
                           'was_coding_club': wasCodingClub ? 1 : 0,
-                          'cgpa': student.cgpa,
+                          'cgpa': student['cgpa'] < 5 ? 5 : student['cgpa'],
                           'branch': branch,
                           'no_of_backlogs': noOfBacklogs,
                         };
 
                         final Uri url = Uri.parse(
-                            'https://placemate-predict-m994.onrender.com/predict');
+                            'https://empowered-py.onrender.com/predict');
                         final headers = {
                           'Content-Type': 'application/json',
                         };
