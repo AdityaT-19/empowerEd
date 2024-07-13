@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
 from tensorflow.keras.models import load_model
+from fastapi.middleware.cors import CORSMiddleware
 import numpy as np
 
 from fileprocess import (
@@ -12,6 +13,15 @@ from fileprocess import (
 from models.ctc_pred import Data
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 model = load_model("./trained_models/model.v1.keras")
 
 
@@ -51,7 +61,7 @@ async def processStudentandParentData(file: UploadFile):
 
 @app.post("/processGradeData")
 async def processGradeData(file: UploadFile):
-    df = readExcel(file, "grade")
+    df = readExcel(file)
     data = prepareGradeData(df)
     return {"usnGradeandCie": data}
 

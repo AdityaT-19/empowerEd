@@ -1,59 +1,52 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class CieController extends GetxController {
-  static final List<Map<String, dynamic>> subjects = [
-    {
-      'name': 'Mathematics',
-      'marks': 45,
-      'courseId': 'MATH101',
-      'semester': 'Semester 1',
-      'ia1': 40,
-      'ia2': 50,
-      'ia3': 45
-    },
-    {
-      'name': 'Physics',
-      'marks': 40,
-      'courseId': 'PHY101',
-      'semester': 'Semester 1',
-      'ia1': 35,
-      'ia2': 45,
-      'ia3': 40
-    },
-    {
-      'name': 'Chemistry',
-      'marks': 35,
-      'courseId': 'CHEM101',
-      'semester': 'Semester 1',
-      'ia1': 30,
-      'ia2': 40,
-      'ia3': 35
-    },
-    {
-      'name': 'Biology',
-      'marks': 30,
-      'courseId': 'BIO101',
-      'semester': 'Semester 1',
-      'ia1': 25,
-      'ia2': 35,
-      'ia3': 30
-    },
-    {
-      'name': 'Computer Science',
-      'marks': 50,
-      'courseId': 'CS101',
-      'semester': 'Semester 1',
-      'ia1': 45,
-      'ia2': 50,
-      'ia3': 50
-    },
-  ];
+  final isLoading = true.obs;
+  final List<Map<String, dynamic>> subjects = [];
   //TODO: Implement CieController
 
   final count = 0.obs;
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+    await getCie();
+  }
+
+  Future<void> getCie() async {
+    isLoading.value = true;
+    final prefs = await SharedPreferences.getInstance();
+    final usn = prefs.getString('usn')!;
+    print(usn);
+    final url = Uri.parse(
+        'https://empowered-dw0m.onrender.com/api/v1/parent/getStudentsMarksAndAttendance/$usn');
+    final response = await http.get(url);
+    final resData = jsonDecode(response.body);
+    var data = resData['data'] as List;
+    print(data);
+    final semRes = jsonDecode((await http.get(Uri.parse(
+            'https://empowered-dw0m.onrender.com/api/v1/student/$usn')))
+        .body)['data'][0];
+    print(semRes);
+    final sem = semRes['sem'];
+
+    data = data.where((element) => element['semester'] == sem).toList();
+    data.forEach((course) {
+      subjects.add({
+        'name': course['name'],
+        'courseId': course['cid'],
+        'semester': course['semester'],
+        'ia1': course['ia1'],
+        'ia2': course['ia2'],
+        'ia3': course['ia3'],
+        'marks': (course['ia1'] + course['ia2'] + course['ia3']) / 2,
+      });
+    });
+    print(data);
+    isLoading.value = false;
   }
 
   @override

@@ -10,6 +10,10 @@ abstract class Routes {
   static const ATTENDANCE = _Paths.ATTENDANCE;
   static const CIE = _Paths.CIE;
   static const COUNSEL = _Paths.COUNSEL;
+  static const UPDATE_ATT = _Paths.UPDATE_ATT;
+  static const UPDATE_CIE = _Paths.UPDATE_CIE;
+  static const UPDATE_COUNSEL = _Paths.UPDATE_COUNSEL;
+  static const BULK_UPDATE = _Paths.BULK_UPDATE;
 }
 
 abstract class _Paths {
@@ -21,4 +25,8 @@ abstract class _Paths {
   static const ATTENDANCE = '/attendance';
   static const CIE = '/cie';
   static const COUNSEL = '/counsel';
+  static const UPDATE_ATT = '/update-att';
+  static const UPDATE_CIE = '/update-cie';
+  static const UPDATE_COUNSEL = '/update-counsel';
+  static const BULK_UPDATE = '/bulk-update';
 }

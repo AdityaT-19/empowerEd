@@ -1,22 +1,74 @@
+import 'package:empowered_teacher/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
-import '../controllers/counsel_controller.dart';
+class CounselView extends StatelessWidget {
+  final List<Map<String, String>> courses = [
+    {'courseCode': 'CSE101', 'section': 'A'},
+    {'courseCode': 'ECE202', 'section': 'B'},
+    {'courseCode': 'ME303', 'section': 'C'},
+  ];
 
-class CounselView extends GetView<CounselController> {
-  const CounselView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('CounselView'),
-        centerTitle: true,
+        foregroundColor: Colors.white,
+        title: Text('Update Attendance'),
+        backgroundColor: Colors.deepPurple, // Purple app bar
       ),
-      body: const Center(
-        child: Text(
-          'CounselView is working',
-          style: TextStyle(fontSize: 20),
+      body: ListView.builder(
+        itemCount: courses.length,
+        itemBuilder: (context, index) {
+          return CourseCard(
+            courseCode: courses[index]['courseCode']!,
+            section: courses[index]['section']!,
+          );
+        },
+      ),
+    );
+  }
+}
+
+class CourseCard extends StatelessWidget {
+  final String courseCode;
+  final String section;
+
+  CourseCard({required this.courseCode, required this.section});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.all(8.0),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: InkWell(
+        onTap: () {
+          // Navigate to update attendance view on tap
+          Get.toNamed(Routes.UPDATE_COUNSEL,
+              arguments: {'courseCode': courseCode, 'section': section});
+        },
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                courseCode!,
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple), // Purple text color
+              ),
+              SizedBox(height: 8.0),
+              Text(
+                'Section: $section',
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+              ),
+            ],
+          ),
         ),
       ),
     );

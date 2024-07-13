@@ -7,6 +7,9 @@ abstract class Routes {
   static const LOGIN = _Paths.LOGIN;
   static const SPLASH = _Paths.SPLASH;
   static const DASHBOARD = _Paths.DASHBOARD;
+  static const ADD_COMP = _Paths.ADD_COMP;
+  static const JOB_LIST = _Paths.JOB_LIST;
+  static const SCHEDULE = _Paths.SCHEDULE;
 }
 
 abstract class _Paths {
@@ -15,4 +18,7 @@ abstract class _Paths {
   static const LOGIN = '/login';
   static const SPLASH = '/splash';
   static const DASHBOARD = '/dashboard';
+  static const ADD_COMP = '/add-comp';
+  static const JOB_LIST = '/job-list';
+  static const SCHEDULE = '/schedule';
 }
