@@ -225,15 +225,15 @@ class AdminController {
 
   async massUpdateGradeStudentAndCid(req: Request, res: Response) {
     try {
-      const { usnAndGrade, cid } = req.body;
-      for (let i = 0; i < usnAndGrade.length; i++) {
+      const { usnGradeandCie } = req.body;
+      for (let i = 0; i < usnGradeandCie.length; i++) {
         let tempStudent = await db
           .update(studCourse)
-          .set({ grade: usnAndGrade[i]["grade"] })
+          .set({ grade: usnGradeandCie[i]["grade"] })
           .where(
             and(
-              eq(studCourse.usn, usnAndGrade[i]["usn"]),
-              eq(studCourse.cid, cid)
+              eq(studCourse.usn, usnGradeandCie[i]["usn"]),
+              eq(studCourse.cid, usnGradeandCie[i]["cid"])
             )
           );
       }
@@ -264,7 +264,7 @@ class AdminController {
       res.status(201).json({ message: "Updation Sucessful" });
     } catch (e) {
       console.log(e);
-      res.status(400).json({ message: "Something went Wrong!" });
+      res.status(400).json({ e });
     }
   }
 

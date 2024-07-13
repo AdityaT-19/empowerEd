@@ -14,24 +14,35 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Copyright } from '../components/Copyrights';
 import { useNavigate } from 'react-router-dom';
+import auth from '../FirebaseSetup';
+import { toast, ToastContainer } from 'react-toastify';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function SignIn() {
   const navigate=useNavigate()
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit =async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
       const email=data.get('email');
       const password=data.get('password');
+    try{
+      const result=await signInWithEmailAndPassword(auth,email as string,password as string);
+      if(result){
+        localStorage.setItem("user",result.user.toString());
+        toast.success('Login successfull');
+        navigate('/')
+      }else{
+        toast.error('Invalid Credentials');
+        navigate('/signin')
+      }
 
-    if(email==="admin@gmail.com"&&password==="admin"){
-      navigate('/dashboard')
-    }else{
-      navigate('/')
+    }catch(e){
+      console.log(e)
+      toast.error('Failed to create teacher');
     }
 
     
@@ -104,6 +115,7 @@ export default function SignIn() {
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
+      <ToastContainer />
     </ThemeProvider>
   );
 }

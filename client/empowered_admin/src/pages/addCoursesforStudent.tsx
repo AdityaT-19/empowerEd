@@ -9,31 +9,26 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from '../components/SideList';
-import { Copyright } from '../components/Copyrights';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableRow, TablePagination } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { LogoutOutlined } from '@mui/icons-material';
+import { TextField, Button } from '@mui/material';
+import { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import auth from '../FirebaseSetup';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { LogoutOutlined } from '@mui/icons-material';
 
 const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
-}
-
-interface Teachers {
-  id: any;
-  tid:string,
-  name:string,
-  dept:string
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -82,56 +77,101 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const defaultTheme = createTheme();
 
-export default function ViewAllTeachers() {
+function CreateTeacherForm({ handleSubmit }: { handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void }) {
+  const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSubmit(event);
+  };
+
+  return (
+    <Box
+      component="form"
+      onSubmit={submitForm}
+      noValidate
+      sx={{
+        mt: 4,
+        p: 3,
+        borderRadius: 2,
+        boxShadow: 3,
+        backgroundColor: 'background.paper',
+        maxWidth: 500,
+        mx: 'auto', // centers the form horizontally
+      }}
+    >
+      <Typography variant="h5" component="h1" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
+        Create Teacher Course Relationship
+      </Typography>
+
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="usn"
+        label="Enter USN"
+        name="usn"
+        autoFocus
+      />
+
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="cid"
+        label="Enter Course ID"
+        name="cid"
+      />
+
+
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2, py: 1.5 }}
+      >
+        Add This Additional Course
+      </Button>
+    </Box>
+  );
+}
+
+export default function AddCoursesForStudent() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [teacherList, setTeacherList] = useState<Teachers[]>([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
-
-  useEffect(() => {
-    async function fetchTeacherList() {
-      try {
-        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getAllTeachers');
-        if (!result.ok) {
-          throw new Error('Network response was not ok');
-        }
-
-        let data = await result.json();
-        data = data.data;
-
-        const newList: Teachers[] = data.map((teacher: any) => ({
-          id: teacher.id,
-          name: teacher.name,
-          tid:teacher.tid,
-          dept: teacher.dept,
-       
-        }));
-
-        setTeacherList(newList);
-      } catch (error) {
-        console.error('Error fetching students:', error);
-      }
-    }
-
-    fetchTeacherList();
-  }, []);
-
-  const navigateTo = (url: string) => {
-    navigate(url);
-  };
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const usn = formData.get('usn') as string;
+    const cid = formData.get('cid') as string;
+    
+    const requestData = {"student":{usn}, "course":{cid}};
+
+    try {
+      const response = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/addAdditionalCourses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
+
+      if (response.ok) {
+        toast.success('Course added successfully');
+      } else {
+        toast.error('Failed to add Course');
+      }
+    } catch (error) {
+      console.error('Error creating relationship:', error);
+      toast.error('An error occurred. Please try again later.');
+    }
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const navigateTo = (url: string) => {
+    navigate(url);
   };
 
   return (
@@ -165,27 +205,18 @@ export default function ViewAllTeachers() {
             >
               Admin Dashboard
             </Typography>
-            <Typography
-              component="h1"
-              variant="h6"
+            <IconButton
               color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              List of All Teachers
-            </Typography>
-            <IconButton color="inherit" onClick={
-              ()=>{
-                let result=localStorage.getItem("user");
-                if(result){
-                  signOut(auth)
-                  localStorage.setItem("user","");
-                  navigate('/signin')
+              onClick={() => {
+                let result = localStorage.getItem('user');
+                if (result) {
+                  signOut(auth);
+                  localStorage.setItem('user', '');
+                  navigate('/signin');
                 }
-              }
-            }>
-        
-            <LogoutOutlined  />
+              }}
+            >
+              <LogoutOutlined />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -231,43 +262,10 @@ export default function ViewAllTeachers() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Tid</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Department</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {teacherList
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row,index) => (
-                    <TableRow key={row.id}
-                    sx={{
-                        backgroundColor: index % 2 != 0 ? 'action.hover' : 'background.paper',
-                        padding:'50px'
-                      }}
-                    >
-                      <TableCell>{row.tid}</TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.dept}</TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-            <TablePagination
-              rowsPerPageOptions={[10, 15, 25]}
-              component="div"
-              count={teacherList.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-            <Copyright sx={{ pt: 4 }} />
+            <CreateTeacherForm handleSubmit={handleSubmit} />
           </Container>
         </Box>
+        <ToastContainer />
       </Box>
     </ThemeProvider>
   );
