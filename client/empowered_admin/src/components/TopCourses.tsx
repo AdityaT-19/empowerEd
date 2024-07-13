@@ -5,77 +5,65 @@ import TableCell from '@mui/material/TableCell';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Title from './Title';
+import { useEffect, useState } from 'react';
 
-// Generate Order Data
-function createData(
-  id: number,
-  scheme: string,
-  c_name: string,
-  deptarment: string,
-  semester: string,
-) {
-  return { id, scheme, c_name,deptarment, semester };
+interface Courses {
+  id:number,
+  cid:string,
+  name:string,
+  dept:string,
+  semester:number
 }
-
-const rows = [
-  createData(
-    0,
-    '2024',
-    'Deep Learning',
-    'Computer Science and Engineering',
-    "5",
-  ),
-  createData(
-    1,
-    '2024',
-    'Deep Learning',
-    'Computer Science and Engineering',
-    "5",
-  ),
-  createData(2, 
-    '2024',
-    'Deep Learning',
-    'Computer Science and Engineering',
-    "5",
-  ),
-  createData(
-    3,
-    '2024',
-    'Deep Learning',
-    'Computer Science and Engineering',
-    "5",
-  ),
-  createData(
-    4,
-    '2024',
-    'Deep Learning',
-    'Computer Science and Engineering',
-    "5",
-  ),
-];
-
 
 
 export default function Orders() {
+  const [courseList, setCourseList] = useState<Courses[]>([]);
+  useEffect(() => {
+    async function fetchCourseList() {
+      try {
+        let result = await fetch('http://localhost:3000/api/v1/admin/courses');
+        if (!result.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        let data = await result.json();
+        data = data.data;
+
+        const newList: Courses[] = data.map((course: any) => ({
+          id:course.id,
+          cid:course.cid,
+          name:course.name,
+          dept:course.dept,
+          semester:course.semester
+        }));
+        
+        setCourseList(newList);
+      } catch (error) {
+        console.error('Error fetching students:', error);
+      }
+    }
+
+    fetchCourseList();
+  }, []);
   return (
     <React.Fragment>
       <Title>Recent Additions For Our Criculum</Title>
       <Table size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Scheme</TableCell>
-            <TableCell>Couse Name</TableCell>
-            <TableCell>Department</TableCell>
-            <TableCell>Semester</TableCell>
+          <TableCell>Course ID</TableCell>
+          <TableCell>Name</TableCell>
+          <TableCell>Department</TableCell>
+          <TableCell>Semester</TableCell>
             
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {courseList.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.scheme}</TableCell>
-              <TableCell>{row.c_name}</TableCell>
-              <TableCell>{row.deptarment}</TableCell>
+              <TableCell>{row.cid}</TableCell>
+              <TableCell>{row.name}</TableCell>
+              <TableCell>{row.dept}</TableCell>
               <TableCell>{row.semester}</TableCell>
             </TableRow>
           ))}
