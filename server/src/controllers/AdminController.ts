@@ -264,7 +264,7 @@ class AdminController {
       res.status(201).json({ message: "Updation Sucessful" });
     } catch (e) {
       console.log(e);
-      res.status(400).json({ message: "Something went Wrong!" });
+      res.status(400).json({ e });
     }
   }
 
