@@ -3,32 +3,15 @@ from pydantic import BaseModel
 from tensorflow.keras.models import load_model
 import numpy as np
 
+from models.ctc_pred import Data
+
 app = FastAPI()
 model = load_model("./trained_models/model.v1.keras")
-
-
-class Data(BaseModel):
-    no_of_dsa: int
-    cgpa: float
-    knows_ml: int
-    knows_python: int
-    knows_dsa: int
-    knows_js: int
-    knows_html: int
-    knows_css: int
-    was_coding_club: int
-    no_of_backlogs: int
-    branch: int
 
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
-
-
-@app.get("/health")
-async def health():
-    return {"status": "Healthy"}
 
 
 @app.post("/predict")

@@ -34,9 +34,6 @@ class TeacherController {
     }
   }
 
-  /**
-   * Main functionality of attendence here
-   */
   async fetchStudentList(req: Request, res: Response) {
     try {
       const teacher_course = req.body;
@@ -60,7 +57,7 @@ class TeacherController {
     }
   }
 
-  async markAttendence(req: Request, res: Response) {
+  async markAttendance(req: Request, res: Response) {
     try {
       const { teacher_course, studentList } = req.body;
       for (let i = 0; i < studentList.length; i++) {
@@ -101,7 +98,7 @@ class TeacherController {
           .set({ attPer: percentage }) // Fixed to 2 decimal places for precision
           .where(and(eq(studCourse.usn, usn), eq(studCourse.cid, courseId)));
       }
-      res.status(201).json({ message: "Attendence Marked Sucessfully." });
+      res.status(201).json({ message: "Attendance Marked Sucessfully." });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: "Something Went Wrong!" });
