@@ -1,5 +1,11 @@
 import { type Response, type Request, application } from "express";
-import { applications, company, interview, students } from "../models";
+import {
+  applications,
+  company,
+  interview,
+  place_cord,
+  students,
+} from "../models";
 import db from "../utils/DataSource";
 import { and, eq, gt } from "drizzle-orm";
 import ical from "ical-generator";
@@ -351,6 +357,28 @@ class PlacementCoordinatorController {
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: "Something went wrong!" });
+    }
+  }
+
+  async getPlacementCoordinators(req: Request, res: Response) {
+    try {
+      let result = await db
+        .select()
+        .from(place_cord)
+        .fullJoin(students, eq(place_cord.usn, students.usn))
+        .where(eq(students.usn, place_cord.usn));
+      //@ts-ignore
+      result = result.map((item) => {
+        return {
+          usn: item.place_cord?.usn,
+          name: item.students?.name,
+          email: item.students?.email,
+        };
+      });
+      res.status(200).json({ data: result });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ message: "Something Went Wrong!" });
     }
   }
 }

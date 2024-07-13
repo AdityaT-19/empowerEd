@@ -38,7 +38,10 @@ router.patch(
   "/massUpdateGradeStudentAndCid",
   AdminController.massUpdateGradeStudentAndCid
 );
-
+router.get(
+  "/getPlacementCoordinators",
+  AdminController.getPlacementCoordinators
+);
 router.put("/updateStudent", AdminController.updateStudent);
 
 router.delete("/dropCourses", AdminController.dropCourses);
