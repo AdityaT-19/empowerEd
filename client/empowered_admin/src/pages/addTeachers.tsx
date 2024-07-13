@@ -183,7 +183,8 @@ export default function AddTeachers() {
       const result = await createUserWithEmailAndPassword(auth,email,tid);
       if (result) {
         await updateProfile(result.user,{
-            displayName:'teacher'
+            displayName:'teacher',
+            photoURL:`${tid}`
         })
         console.log(result.user)
         const response = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/createTeacher', {
@@ -195,6 +196,7 @@ export default function AddTeachers() {
         });
 
         if (response.ok) {
+
           toast.success('Teacher created successfully');
           
         } else {

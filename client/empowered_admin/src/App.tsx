@@ -14,6 +14,7 @@ import ViewAllStudentsWithButton from './pages/viewStudentsWithUpdateButton';
 import TeachCourse from './pages/teachCourse';
 import AddCoursesForStudent from './pages/addCoursesforStudent';
 import MassUpdateGrade from './pages/massGradeUpdates';
+import MassEnroll from './pages/massStudentParentEnroll';
 export default function App() {
   return (
     <Router>
@@ -33,6 +34,7 @@ export default function App() {
         <Route path='/updateStudentAfterClick/:id' element={<UpdateStudent/>}/>
         <Route path='/addCoordniator' element={<AddPlacementCoordinator/>}/>
         <Route path='/deleteCoordinator' element={<DeletePlacementCoordinator/>}/>
+        <Route path='/massStudentParentEnroll' element={<MassEnroll/>}/>
 
       </Routes>
     </Router>
