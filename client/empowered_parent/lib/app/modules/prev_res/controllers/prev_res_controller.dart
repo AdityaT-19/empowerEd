@@ -4,7 +4,6 @@ class PrevResController extends GetxController {
   static final List<Map<String, dynamic>> semesters = [
     {
       'title': 'Semester 1',
-      'cgpa': 8.5,
       'courses': [
         {'courseId': 'MATH101', 'grade': 'A'},
         {'courseId': 'PHY101', 'grade': 'B+'},
@@ -16,7 +15,6 @@ class PrevResController extends GetxController {
     },
     {
       'title': 'Semester 2',
-      'cgpa': 8.2,
       'courses': [
         {'courseId': 'MATH102', 'grade': 'B+'},
         {'courseId': 'PHY102', 'grade': 'A'},
@@ -28,7 +26,6 @@ class PrevResController extends GetxController {
     },
     {
       'title': 'Semester 3',
-      'cgpa': 8.7,
       'courses': [
         {'courseId': 'MATH201', 'grade': 'A+'},
         {'courseId': 'PHY201', 'grade': 'A'},
