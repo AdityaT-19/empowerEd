@@ -63,7 +63,7 @@ async def processStudentandParentData(file: UploadFile):
 
 @app.post("/processGradeData")
 async def processGradeData(file: UploadFile):
-    df = readExcel(file, "grade")
+    df = readExcel(file)
     data = prepareGradeData(df)
     return {"usnGradeandCie": data}
 
