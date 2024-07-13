@@ -10,7 +10,7 @@ export default function TeacherCount() {
     useEffect(() => {
     async function fetchTeacherList() {
       try {
-        let result = await fetch('http://localhost:3000/api/v1/admin/getAllTeachers');
+        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getAllTeachers');
         if (!result.ok) {
           throw new Error('Network response was not ok');
         }

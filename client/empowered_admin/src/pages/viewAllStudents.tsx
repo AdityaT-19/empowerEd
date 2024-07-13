@@ -20,6 +20,9 @@ import { Copyright } from '../components/Copyrights';
 import { useNavigate } from 'react-router-dom';
 import { Table, TableBody, TableCell, TableHead, TableRow, TablePagination } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { LogoutOutlined } from '@mui/icons-material';
+import { signOut } from 'firebase/auth';
+import auth from '../FirebaseSetup';
 
 const drawerWidth: number = 240;
 
@@ -94,7 +97,7 @@ export default function ViewAllStudents() {
   useEffect(() => {
     async function fetchStudentList() {
       try {
-        let result = await fetch('http://localhost:3000/api/v1/admin/getAllStudents');
+        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getAllStudents');
         if (!result.ok) {
           throw new Error('Network response was not ok');
         }
@@ -178,10 +181,18 @@ export default function ViewAllStudents() {
             >
               List of All Students
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton color="inherit" onClick={
+              ()=>{
+                let result=localStorage.getItem("user");
+                if(result){
+                  signOut(auth)
+                  localStorage.setItem("user","");
+                  navigate('/signin')
+                }
+              }
+            }>
+        
+                <LogoutOutlined  />
             </IconButton>
           </Toolbar>
         </AppBar>

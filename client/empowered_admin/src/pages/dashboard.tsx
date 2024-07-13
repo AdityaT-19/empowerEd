@@ -22,6 +22,10 @@ import Deposits from '../components/TeacherCountTile';
 import Orders from '../components/TopCourses';
 import { Copyright } from '../components/Copyrights';
 import { useNavigate } from 'react-router-dom';
+import { LogoutOutlined } from '@mui/icons-material';
+import auth from '../FirebaseSetup';
+import { signOut } from 'firebase/auth';
+import { useEffect } from 'react';
 
 const drawerWidth: number = 240;
 interface AppBarProps extends MuiAppBarProps {
@@ -85,6 +89,14 @@ export default function Dashboard() {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  useEffect(()=>{
+    let result=localStorage.getItem("user")
+    console.log(result)
+    if(result===""||result==null){
+      navigate('/signin');
+    }
+  })
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -117,10 +129,18 @@ export default function Dashboard() {
             >
               Admin Dashboard
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
+            <IconButton color="inherit" onClick={
+              ()=>{
+                let result=localStorage.getItem("user");
+                if(result){
+                  signOut(auth)
+                  localStorage.setItem("user","");
+                  navigate('/signin')
+                }
+              }
+            }>
+        
+                <LogoutOutlined  />
             </IconButton>
           </Toolbar>
         </AppBar>

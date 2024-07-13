@@ -13,27 +13,20 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
 import { MainListItems, SecondaryListItems } from '../components/SideList';
-import { Copyright } from '../components/Copyrights';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableRow, TablePagination } from '@mui/material';
-import { useEffect, useState } from 'react';
 import { LogoutOutlined } from '@mui/icons-material';
-import { signOut } from 'firebase/auth';
 import auth from '../FirebaseSetup';
+import { signOut } from 'firebase/auth';
+import { Dropzone, FileMosaic } from '@dropzone-ui/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Button } from '@mui/material';
 
 const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
-}
-
-interface Teachers {
-  id: any;
-  tid:string,
-  name:string,
-  dept:string
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -82,40 +75,38 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const defaultTheme = createTheme();
 
-export default function ViewAllTeachers() {
-  const [open, setOpen] = useState(false);
+export default function MassUpdateGrade() {
+  const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
-  const [teacherList, setTeacherList] = useState<Teachers[]>([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
+  const [files, setFiles] = React.useState([]);
 
-  useEffect(() => {
-    async function fetchTeacherList() {
-      try {
-        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getAllTeachers');
-        if (!result.ok) {
-          throw new Error('Network response was not ok');
-        }
+  const updateFiles = (incomingFiles: any) => {
+    setFiles(incomingFiles);
+  };
 
-        let data = await result.json();
-        data = data.data;
+  const handleFileUpload = async () => {
+    const formData = new FormData();
+    files.forEach((file:any) => {
+      formData.append('files', file.file);
+    });
 
-        const newList: Teachers[] = data.map((teacher: any) => ({
-          id: teacher.id,
-          name: teacher.name,
-          tid:teacher.tid,
-          dept: teacher.dept,
-       
-        }));
-
-        setTeacherList(newList);
-      } catch (error) {
-        console.error('Error fetching students:', error);
+    try {
+      let response = await fetch("https://empowered-py.onrender.com/processGradeData", {
+        method: 'POST',
+        body: formData
+      });
+      response=await response.json()
+      console.log(response)
+      if (response.ok) {
+        toast.success('Grades updated successfully');
+      } else {
+        toast.error('Failed to update grades');
       }
+    } catch (error) {
+      console.error('Error updating grades:', error);
+      toast.error('An error occurred. Please try again later.');
     }
-
-    fetchTeacherList();
-  }, []);
+  };
 
   const navigateTo = (url: string) => {
     navigate(url);
@@ -123,15 +114,6 @@ export default function ViewAllTeachers() {
 
   const toggleDrawer = () => {
     setOpen(!open);
-  };
-
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
   };
 
   return (
@@ -156,36 +138,21 @@ export default function ViewAllTeachers() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
+            <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
               Admin Dashboard
             </Typography>
-            <Typography
-              component="h1"
-              variant="h6"
+            <IconButton
               color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              List of All Teachers
-            </Typography>
-            <IconButton color="inherit" onClick={
-              ()=>{
-                let result=localStorage.getItem("user");
-                if(result){
-                  signOut(auth)
-                  localStorage.setItem("user","");
-                  navigate('/signin')
+              onClick={() => {
+                let result = localStorage.getItem('user');
+                if (result) {
+                  signOut(auth);
+                  localStorage.setItem('user', '');
+                  navigate('/signin');
                 }
-              }
-            }>
-        
-            <LogoutOutlined  />
+              }}
+            >
+              <LogoutOutlined />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -221,9 +188,7 @@ export default function ViewAllTeachers() {
           component="main"
           sx={{
             backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
+              theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
@@ -231,43 +196,22 @@ export default function ViewAllTeachers() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Tid</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Department</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {teacherList
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row,index) => (
-                    <TableRow key={row.id}
-                    sx={{
-                        backgroundColor: index % 2 != 0 ? 'action.hover' : 'background.paper',
-                        padding:'50px'
-                      }}
-                    >
-                      <TableCell>{row.tid}</TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.dept}</TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-            <TablePagination
-              rowsPerPageOptions={[10, 15, 25]}
-              component="div"
-              count={teacherList.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-            <Copyright sx={{ pt: 4 }} />
+            <Typography variant="h6" gutterBottom>
+              Add Your Excel Sheet to Update Grades
+            </Typography>
+            <Dropzone onChange={updateFiles} value={files} accept=".xlsx">
+              {files.map((file:any) => (
+                <FileMosaic key={file.name} {...file} preview />
+              ))}
+            </Dropzone>
+            <Box sx={{ mt: 2 }}>
+              <Button onClick={handleFileUpload}>
+                Upload
+              </Button>
+            </Box>
           </Container>
         </Box>
+        <ToastContainer />
       </Box>
     </ThemeProvider>
   );

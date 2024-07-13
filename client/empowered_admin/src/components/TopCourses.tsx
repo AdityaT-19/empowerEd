@@ -21,7 +21,7 @@ export default function Orders() {
   useEffect(() => {
     async function fetchCourseList() {
       try {
-        let result = await fetch('http://localhost:3000/api/v1/admin/courses');
+        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/courses');
         if (!result.ok) {
           throw new Error('Network response was not ok');
         }
