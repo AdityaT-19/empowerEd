@@ -92,101 +92,103 @@ class _ScheduleViewState extends State<ScheduleView> {
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Schedule Details',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-            ),
-            SizedBox(height: 20),
-            DropdownButtonFormField<String>(
-              value: _selectedUsn,
-              hint: Text('Select USN'),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedUsn = newValue;
-                });
-              },
-              items: ScheduleController.dummyUsns
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.deepPurple),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Schedule Details',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            TextButton(
-              onPressed: _pickDate,
-              child: Text(
-                'Select Date: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}',
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-            SizedBox(height: 20),
-            TextButton(
-              onPressed: _pickStartTime,
-              child: Text(
-                'Select Start Time: ${_startTime.format(context)}',
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-            SizedBox(height: 20),
-            TextButton(
-              onPressed: _pickEndTime,
-              child: Text(
-                'Select End Time: ${_endTime.format(context)}',
-                style: TextStyle(color: Colors.deepPurple),
-              ),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(
-                labelText: 'Location',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide(color: Colors.deepPurple),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  textStyle: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+              SizedBox(height: 20),
+              DropdownButtonFormField<String>(
+                value: _selectedUsn,
+                hint: Text('Select USN'),
+                onChanged: (String? newValue) {
+                  setState(() {
+                    _selectedUsn = newValue;
+                  });
+                },
+                items: ScheduleController.dummyUsns
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.deepPurple),
                   ),
                 ),
-                child: Text('Submit'),
               ),
-            ),
-          ],
+              SizedBox(height: 20),
+              TextButton(
+                onPressed: _pickDate,
+                child: Text(
+                  'Select Date: ${DateFormat('yyyy-MM-dd').format(_selectedDate)}',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextButton(
+                onPressed: _pickStartTime,
+                child: Text(
+                  'Select Start Time: ${_startTime.format(context)}',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextButton(
+                onPressed: _pickEndTime,
+                child: Text(
+                  'Select End Time: ${_endTime.format(context)}',
+                  style: TextStyle(color: Colors.deepPurple),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _locationController,
+                decoration: InputDecoration(
+                  labelText: 'Location',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: Colors.deepPurple),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text('Submit'),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:excel/excel.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class BulkUpdateView extends StatefulWidget {
   @override
@@ -16,20 +17,48 @@ class _BulkUpdateViewState extends State<BulkUpdateView> {
 
     if (result != null) {
       var fileBytes = result.files.first.bytes;
-      var excel = Excel.decodeBytes(fileBytes!);
-
-      // Process the excel file if needed
-      // ...
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(excel.tables.keys.toString())),
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse('https://empowered-py.render.com/processCieData'),
       );
-
-      // Show success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Excel file uploaded successfully!')),
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          fileBytes!,
+          filename: 'uploaded_file.xlsx',
+        ),
       );
+      request.headers.addAll(<String, String>{
+        'Content-Type': 'multipart/form-data',
+      });
+      final response = await request.send();
+      final responseString = await response.stream.bytesToString();
+      print(response.statusCode);
+      print(responseString);
+
+      if (response.statusCode == 200) {
+        Get.snackbar(
+          'Success',
+          'File uploaded successfully',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'Error: ${response.statusCode}',
+          messageText: Text(
+            'Error: $responseString',
+            style: TextStyle(color: Colors.white),
+          ),
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
     } else {
-      // User canceled the picker
+      Get.snackbar(
+        'Error',
+        'File picker canceled',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
