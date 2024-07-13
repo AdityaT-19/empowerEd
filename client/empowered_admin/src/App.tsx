@@ -1,35 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import SignIn from './pages/signin';
+import Dashboard from './pages/dashboard';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <Router>
+      <Routes>
+        <Route path='/' element={<SignIn />} />
+        <Route path='/dashboard' element={<Dashboard />} />
+        <Route path='/enrollStudentAndParent' element={<Dashboard />} />
+        <Route path='/updateGrades' element={<Dashboard />} />
+        <Route path='/addTeachers' element={<Dashboard />} />
+        <Route path='/addCourses' element={<Dashboard />} />
+        <Route path='/viewAllStudents' element={<Dashboard />} />
+        <Route path='/viewCourses' element={<Dashboard />} />
+        <Route path='/viewTeachers' element={<Dashboard />} />
+        <Route path='/addCourses' element={<Dashboard/>}/>
+        <Route path='/dropCourses' element={<Dashboard/>}/>
+        <Route path='/updateStudent' element={<Dashboard/>}/>
+        <Route path='/addCoordniator' element={<Dashboard/>}/>
+        <Route path='/deleteCoordinator' element={<Dashboard/>}/>
 
-export default App
+      </Routes>
+    </Router>
+  );
+}
