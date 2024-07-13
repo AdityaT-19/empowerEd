@@ -9,15 +9,16 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from '../components/SideList';
 import { Copyright } from '../components/Copyrights';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableRow, TablePagination } from '@mui/material';
+import { Table, TableBody, TableCell, TableHead, TableRow, TablePagination, Button } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { LogoutOutlined } from '@mui/icons-material';
 import { signOut } from 'firebase/auth';
@@ -29,11 +30,14 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
-interface Teachers {
+interface Student {
   id: any;
-  tid:string,
-  name:string,
-  dept:string
+  usn: any;
+  name: any;
+  sem: any;
+  email: any;
+  dept: any;
+  section: any;
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -80,19 +84,20 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
+
 const defaultTheme = createTheme();
 
-export default function ViewAllTeachers() {
+export default function ViewAllStudentsWithButton() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const [teacherList, setTeacherList] = useState<Teachers[]>([]);
+  const [studentList, setStudentList] = useState<Student[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(15);
 
   useEffect(() => {
-    async function fetchTeacherList() {
+    async function fetchStudentList() {
       try {
-        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getAllTeachers');
+        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getAllStudents');
         if (!result.ok) {
           throw new Error('Network response was not ok');
         }
@@ -100,21 +105,23 @@ export default function ViewAllTeachers() {
         let data = await result.json();
         data = data.data;
 
-        const newList: Teachers[] = data.map((teacher: any) => ({
-          id: teacher.id,
-          name: teacher.name,
-          tid:teacher.tid,
-          dept: teacher.dept,
-       
+        const newList: Student[] = data.map((student: any) => ({
+          id: student.id,
+          usn: student.usn,
+          name: student.name,
+          sem: student.sem,
+          email: student.email,
+          dept: student.dept,
+          section: student.section,
         }));
 
-        setTeacherList(newList);
+        setStudentList(newList);
       } catch (error) {
         console.error('Error fetching students:', error);
       }
     }
 
-    fetchTeacherList();
+    fetchStudentList();
   }, []);
 
   const navigateTo = (url: string) => {
@@ -172,7 +179,7 @@ export default function ViewAllTeachers() {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              List of All Teachers
+              List of All Students
             </Typography>
             <IconButton color="inherit" onClick={
               ()=>{
@@ -185,7 +192,7 @@ export default function ViewAllTeachers() {
               }
             }>
         
-            <LogoutOutlined  />
+                <LogoutOutlined  />
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -234,13 +241,17 @@ export default function ViewAllTeachers() {
             <Table size="small">
               <TableHead>
                 <TableRow>
-                  <TableCell>Tid</TableCell>
+                  <TableCell>USN</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Department</TableCell>
+                  <TableCell>Semester</TableCell>
+                  <TableCell>Section</TableCell>
+                  <TableCell>Email</TableCell>
+                  <TableCell>Update</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {teacherList
+                {studentList
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row,index) => (
                     <TableRow key={row.id}
@@ -249,9 +260,22 @@ export default function ViewAllTeachers() {
                         padding:'50px'
                       }}
                     >
-                      <TableCell>{row.tid}</TableCell>
+                      <TableCell>{row.usn}</TableCell>
                       <TableCell>{row.name}</TableCell>
                       <TableCell>{row.dept}</TableCell>
+                      <TableCell>{row.sem}</TableCell>
+                      <TableCell>{row.section}</TableCell>
+                      <TableCell>{row.email}</TableCell>
+                      <TableCell>
+                        <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{ mt: 2, mb: 2, py: 1.5 }}
+                        onClick={()=>{navigate(`/updateStudentAfterClick/${row.usn}`)}}
+                    >
+                        Update Student
+                    </Button> 
+                    </TableCell>
                     </TableRow>
                   ))}
               </TableBody>
@@ -259,7 +283,7 @@ export default function ViewAllTeachers() {
             <TablePagination
               rowsPerPageOptions={[10, 15, 25]}
               component="div"
-              count={teacherList.length}
+              count={studentList.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}

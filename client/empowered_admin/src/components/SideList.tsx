@@ -6,7 +6,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 
 import PeopleIcon from '@mui/icons-material/People';
 
-import { Add, AddModeratorRounded, BookSharp, ContactPage, DataObject, Delete, Grade, List, Remove, SchoolRounded, Update } from '@mui/icons-material';
+import { Add, BookSharp, ContactPage, DataObject, Delete, ForkLeft, Grade, List, Remove, SchoolRounded, SystemUpdate, Update } from '@mui/icons-material';
 import React from 'react';
 
 interface NavigatorProps{
@@ -16,7 +16,7 @@ interface NavigatorProps{
 export function MainListItems({navigate}:NavigatorProps){
   return (
   <React.Fragment>
-    <ListItemButton onClick={()=>navigate('/dashboard')}>
+    <ListItemButton onClick={()=>navigate('/')}>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
@@ -79,26 +79,27 @@ export function MainListItems({navigate}:NavigatorProps){
 export function SecondaryListItems({navigate}:NavigatorProps){
   return (
   <React.Fragment>
-    <ListItemButton onClick={()=>navigate('/addCourses')}>
+    <ListItemButton onClick={()=>navigate('/addCoursesForStudent')}>
       <ListItemIcon>
         <Add />
       </ListItemIcon>
       <ListItemText primary="Add Courses" />
 
     </ListItemButton >
-    
-    <ListItemButton onClick={()=>navigate('/dropCourses')}>
-      <ListItemIcon>
-        <Delete/>
-      </ListItemIcon>
-      <ListItemText primary="Drop Courses" />
-    </ListItemButton>
+  
 
     <ListItemButton onClick={()=>navigate('/updateStudent')}>
       <ListItemIcon>
-        <Update />
+        <SystemUpdate />
       </ListItemIcon>
       <ListItemText primary="Update Student" />
+    </ListItemButton>
+
+    <ListItemButton onClick={()=>navigate('/teachCourse')}>
+      <ListItemIcon>
+        <ForkLeft/>
+      </ListItemIcon>
+      <ListItemText primary="Teach Course" />
     </ListItemButton>
 
     <ListItemButton onClick={()=>navigate('/addCoordniator')}>

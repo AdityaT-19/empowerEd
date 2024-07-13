@@ -9,31 +9,31 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from '../components/SideList';
-import { Copyright } from '../components/Copyrights';
 import { useNavigate } from 'react-router-dom';
-import { Table, TableBody, TableCell, TableHead, TableRow, TablePagination } from '@mui/material';
+import { TextField, Button, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { LogoutOutlined } from '@mui/icons-material';
-import { signOut } from 'firebase/auth';
 import auth from '../FirebaseSetup';
+import { createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { LogoutOutlined } from '@mui/icons-material';
 
 const drawerWidth: number = 240;
 
-interface AppBarProps extends MuiAppBarProps {
-  open?: boolean;
+interface USN{
+    usn:string,
+    name:string
 }
 
-interface Teachers {
-  id: any;
-  tid:string,
-  name:string,
-  dept:string
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
 }
 
 const AppBar = styled(MuiAppBar, {
@@ -82,17 +82,14 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const defaultTheme = createTheme();
 
-export default function ViewAllTeachers() {
-  const [open, setOpen] = useState(false);
-  const navigate = useNavigate();
-  const [teacherList, setTeacherList] = useState<Teachers[]>([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
+function CreatePlacementCordForm({ handleSubmit }: { handleSubmit: (event: React.FormEvent<HTMLFormElement>, dept: string) => void }) {
+  const [dept, setDept] = useState('');
+  const [usnList,setUsnList]=useState<USN[]>([]);
 
   useEffect(() => {
-    async function fetchTeacherList() {
+    async function fetchStudentList() {
       try {
-        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getAllTeachers');
+        let result = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/getPlacementCoordinators');
         if (!result.ok) {
           throw new Error('Network response was not ok');
         }
@@ -100,38 +97,115 @@ export default function ViewAllTeachers() {
         let data = await result.json();
         data = data.data;
 
-        const newList: Teachers[] = data.map((teacher: any) => ({
-          id: teacher.id,
-          name: teacher.name,
-          tid:teacher.tid,
-          dept: teacher.dept,
-       
+        const newList= data.map((student: any) => ({
+          usn: student.usn,
+          name:student.name
         }));
 
-        setTeacherList(newList);
+        setUsnList(newList);
       } catch (error) {
         console.error('Error fetching students:', error);
       }
     }
 
-    fetchTeacherList();
+    fetchStudentList();
   }, []);
 
-  const navigateTo = (url: string) => {
-    navigate(url);
+  const handleDeptChange = (event: SelectChangeEvent<string>) => {
+    setDept(event.target.value);
   };
+
+  const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    handleSubmit(event, dept);
+  };
+
+  return (
+    <Box
+      component="form"
+      onSubmit={submitForm}
+      noValidate
+      sx={{
+        mt: 4,
+        p: 3,
+        borderRadius: 2,
+        boxShadow: 3,
+        backgroundColor: 'background.paper',
+        maxWidth: 500,
+        mx: 'auto', // centers the form horizontally
+      }}
+    >
+      <Typography variant="h5" component="h1" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
+        Delete Placement Coordinator
+      </Typography>
+      
+      <FormControl fullWidth margin="normal" required>
+        <InputLabel id="dept-label">Select USN</InputLabel>
+        <Select
+        labelId="dept-label"
+        id="dept"
+        value={dept}
+        onChange={handleDeptChange}
+        label="Department"
+        >
+        {usnList.map((usn) => (
+            <MenuItem key={usn.usn} value={usn.usn}>
+            {`${usn.usn} - ${usn.name}`}
+            </MenuItem>
+        ))}
+        </Select>
+
+      </FormControl>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        sx={{ mt: 3, mb: 2, py: 1.5 }}
+      >
+        Add Placement Coordinator
+      </Button>
+    </Box>
+  );
+}
+
+export default function DeletePlacementCoordinator() {
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
+  
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, dept: string) => {
+    event.preventDefault();
+   
+
+    try {
+        
+        const response = await fetch(`http://localhost:3000/api/v1/admin/deletePlacementCoodinator/${dept}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        
+        });
+
+        if (response.ok) {
+          toast.success('Coordinator delete successfully');
+          
+        } else {
+          toast.error('Failed to delete coordinator');
+       
+        }
+    } catch (error) {
+      console.error('Error creating course:', error);
+      toast.error('An error occurred. Please try again later.');
+    }
   };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const navigateTo = (url: string) => {
+    navigate(url);
   };
 
   return (
@@ -164,15 +238,6 @@ export default function ViewAllTeachers() {
               sx={{ flexGrow: 1 }}
             >
               Admin Dashboard
-            </Typography>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              List of All Teachers
             </Typography>
             <IconButton color="inherit" onClick={
               ()=>{
@@ -231,43 +296,10 @@ export default function ViewAllTeachers() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Tid</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Department</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {teacherList
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row,index) => (
-                    <TableRow key={row.id}
-                    sx={{
-                        backgroundColor: index % 2 != 0 ? 'action.hover' : 'background.paper',
-                        padding:'50px'
-                      }}
-                    >
-                      <TableCell>{row.tid}</TableCell>
-                      <TableCell>{row.name}</TableCell>
-                      <TableCell>{row.dept}</TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-            <TablePagination
-              rowsPerPageOptions={[10, 15, 25]}
-              component="div"
-              count={teacherList.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-            <Copyright sx={{ pt: 4 }} />
+            <CreatePlacementCordForm handleSubmit={handleSubmit} />
           </Container>
         </Box>
+        <ToastContainer />
       </Box>
     </ThemeProvider>
   );
