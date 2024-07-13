@@ -1,4 +1,5 @@
 import 'package:empowered_student/app/modules/dashboard/controllers/dashboard_controller.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -62,6 +63,14 @@ class DashboardScreen extends StatelessWidget {
                 },
               );
             }),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.red),
+              title: Text('Logout'),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Get.offAllNamed('/login');
+              },
+            ),
           ],
         ),
       ),

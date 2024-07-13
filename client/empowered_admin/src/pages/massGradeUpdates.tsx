@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 import { LogoutOutlined } from '@mui/icons-material';
 import auth from '../FirebaseSetup';
 import { signOut } from 'firebase/auth';
-import { Dropzone, FileMosaic } from '@dropzone-ui/react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '@mui/material';
@@ -78,27 +77,47 @@ const defaultTheme = createTheme();
 export default function MassUpdateGrade() {
   const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
-  const [files, setFiles] = React.useState([]);
+  const [file, setFile] = React.useState<File | null>(null);
 
-  const updateFiles = (incomingFiles: any) => {
-    setFiles(incomingFiles);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
   };
 
-  const handleFileUpload = async () => {
-    const formData = new FormData();
-    files.forEach((file:any) => {
-      formData.append('files', file.file);
-    });
+  const handleFileUpload = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
+    if (!file) {
+      toast.error('Please select a file to upload.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    console.log(file)
     try {
-      let response = await fetch("https://empowered-py.onrender.com/processGradeData", {
+      let response = await fetch('https://empowered-py.onrender.com/processGradeData', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
-      response=await response.json()
-      console.log(response)
+     
       if (response.ok) {
+        response=await response.json()
+        console.log(response)
+        let finalresponse=await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/massupdateGradeStudentAndCid', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(response),
+          });
+        if(finalresponse.ok){
         toast.success('Grades updated successfully');
+        }else{
+            toast.error("Something went wrong while updating grades");
+        }
       } else {
         toast.error('Failed to update grades');
       }
@@ -199,16 +218,12 @@ export default function MassUpdateGrade() {
             <Typography variant="h6" gutterBottom>
               Add Your Excel Sheet to Update Grades
             </Typography>
-            <Dropzone onChange={updateFiles} value={files} accept=".xlsx">
-              {files.map((file:any) => (
-                <FileMosaic key={file.name} {...file} preview />
-              ))}
-            </Dropzone>
-            <Box sx={{ mt: 2 }}>
-              <Button onClick={handleFileUpload}>
+            <form onSubmit={handleFileUpload} encType="multipart/form-data">
+              <input type="file" onChange={handleFileChange} accept=".xlsx" />
+              <Button type="submit" variant="contained" color="primary">
                 Upload
               </Button>
-            </Box>
+            </form>
           </Container>
         </Box>
         <ToastContainer />

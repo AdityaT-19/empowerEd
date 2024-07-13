@@ -19,10 +19,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from '../components/SideList';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Select, MenuItem, FormControl, InputLabel, SelectChangeEvent } from '@mui/material';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import auth from '../FirebaseSetup'
 import { useEffect } from 'react';
 
 const drawerWidth: number = 240;
@@ -89,7 +87,7 @@ interface FormData {
   counsel_rep: any[];
 }
 
-function CreateStudentForm({ handleSubmit }: { handleSubmit: (event: React.FormEvent<HTMLFormElement>, student: any) => void }) {
+function CreateStudentForm({ }: { handleSubmit: (event: React.FormEvent<HTMLFormElement>, student: any) => void }) {
     const { id } = useParams<{ id: string }>();
     const [dept, setDept] = useState('');
     const [studentById, setStudentById] = useState<FormData | null>(null);
@@ -143,17 +141,17 @@ function CreateStudentForm({ handleSubmit }: { handleSubmit: (event: React.FormE
       event.preventDefault();
       if (!studentById) return;
   
-      const studentData = {
-        "usn":studentById.usn,
-        "name":studentById.name,
-        "sem":studentById.sem,
-        "email":studentById.email,
-        "dept":dept,
-        "cgpa":studentById.cgpa,
-        "section":studentById.section,
-        "achivements":studentById.achievements,
-        "counsel_rep":studentById.counsel_rep
-      };
+    //   const studentData = {
+    //     "usn":studentById.usn,
+    //     "name":studentById.name,
+    //     "sem":studentById.sem,
+    //     "email":studentById.email,
+    //     "dept":dept,
+    //     "cgpa":studentById.cgpa,
+    //     "section":studentById.section,
+    //     "achivements":studentById.achievements,
+    //     "counsel_rep":studentById.counsel_rep
+    //   };
       try {
         const response = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/updateStudent', {
           method: 'PUT',
