@@ -17,7 +17,7 @@ import { MainListItems, SecondaryListItems } from '../components/SideList';
 import { useNavigate } from 'react-router-dom';
 import { LogoutOutlined } from '@mui/icons-material';
 import auth from '../FirebaseSetup';
-import { signOut } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button } from '@mui/material';
@@ -93,36 +93,55 @@ export default function MassUpdateGrade() {
       toast.error('Please select a file to upload.');
       return;
     }
-
+    console.log(file)
     const formData = new FormData();
     formData.append('file', file);
-    console.log(file)
+
     try {
-      let response = await fetch('https://empowered-py.onrender.com/processGradeData', {
+      let response = await fetch('https://empowered-py.onrender.com/processStudentandParentData', {
         method: 'POST',
         body: formData,
       });
-     
+
       if (response.ok) {
-        response=await response.json()
-        console.log(response)
-        let finalresponse=await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/massupdateGradeStudentAndCid', {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(response),
-          });
-        if(finalresponse.ok){
-        toast.success('Grades updated successfully');
-        }else{
-            toast.error("Something went wrong while updating grades");
+        const data = await response.json();
+        console.log(data)
+        const studentAndParents = data.studentAndParents;
+
+        for (let i = 0; i < studentAndParents.length; i++) {
+          const studentData = studentAndParents[i].student;
+          const parentData = studentAndParents[i].parent
+
+          // Create student and parent accounts
+          const studentResult = await createUserWithEmailAndPassword(auth, studentData.email, studentData.usn);
+          const parentResult = await createUserWithEmailAndPassword(auth, parentData.email, parentData.phNo);
+
+          if (studentResult && parentResult) {
+            // Update user profiles
+            await updateProfile(studentResult.user, { displayName: 'student', photoURL: studentData.usn });
+            await updateProfile(parentResult.user, { displayName: 'parent', photoURL: studentData.usn });
+
+            // Call API to enroll student and parent
+            const enrollResponse = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/createStudentParentEnroll', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ student: studentData, parents: parentData }),
+            });
+
+            if (enrollResponse.ok) {
+              toast.success('Student and Parent enrolled successfully');
+            } else {
+              toast.error('Failed to enroll Student and Parent');
+            }
+          }
         }
       } else {
-        toast.error('Failed to update grades');
+        toast.error('Failed to process student and parent data');
       }
     } catch (error) {
-      console.error('Error updating grades:', error);
+      console.error('Error processing student and parent data:', error);
       toast.error('An error occurred. Please try again later.');
     }
   };
@@ -216,7 +235,7 @@ export default function MassUpdateGrade() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Typography variant="h6" gutterBottom>
-              Add Your Excel Sheet to Update Grades
+              Add Your Excel Sheet to Enroll Student and Parents
             </Typography>
             <form onSubmit={handleFileUpload} encType="multipart/form-data">
               <input type="file" onChange={handleFileChange} accept=".xlsx" />
@@ -231,3 +250,4 @@ export default function MassUpdateGrade() {
     </ThemeProvider>
   );
 }
+

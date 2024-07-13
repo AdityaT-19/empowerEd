@@ -6,7 +6,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 
 import PeopleIcon from '@mui/icons-material/People';
 
-import { Add, BookSharp, ContactPage, DataObject, Delete, ForkLeft, Grade, List, Remove, SchoolRounded, SystemUpdate, Update } from '@mui/icons-material';
+import { Add, BookSharp, ContactPage, DataObject, Delete, ForkLeft, Grade, List, Remove, SchoolRounded, SystemUpdate, Update, UploadFile } from '@mui/icons-material';
 import React from 'react';
 
 interface NavigatorProps{
@@ -114,6 +114,13 @@ export function SecondaryListItems({navigate}:NavigatorProps){
         <Remove/>
       </ListItemIcon>
       <ListItemText primary="Delete Coordinator" />
+    </ListItemButton>
+
+    <ListItemButton onClick={()=>navigate('/massStudentParentEnroll')}>
+      <ListItemIcon>
+        <UploadFile/>
+      </ListItemIcon>
+      <ListItemText primary="Mass Enroll Students" />
     </ListItemButton>
   </React.Fragment>
   );
