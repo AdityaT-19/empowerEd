@@ -3,7 +3,7 @@ from fastapi import UploadFile
 import pandas as pd
 
 
-def getFile(file: UploadFile, category: str):
+def getFile(file: UploadFile):
     file_location = f"{file.filename}"
     f = open(file_location, "wb")
     f.write(file.file.read())
@@ -11,8 +11,8 @@ def getFile(file: UploadFile, category: str):
     return file_location
 
 
-def readExcel(file: UploadFile, category: str):
-    file_location = getFile(file, category)
+def readExcel(file: UploadFile):
+    file_location = getFile(file)
     df = pd.read_excel(file_location)
     os.remove(file_location)
     return df
@@ -43,4 +43,32 @@ def prepareStudentandParentData(df):
         }
         data.append({"student": student, "parent": parent})
     print("comp")
+    return data
+
+
+def prepareGradeData(df):
+    data = []
+    for i in range(len(df.head())):
+        grade = {
+            "usn": df["usn"][i],
+            "cid": df["cid"][i],
+            "grade": df["grade"][i],
+        }
+        data.append(grade)
+    return data
+
+
+def prepareCieData(df):
+    data = []
+    cols = df.columns
+    cols = cols[cols.str.contains("ia")]
+    print(cols)
+    for i in range(len(df.head())):
+        for ia in cols:
+            cie = {
+                "usn": df["usn"][i],
+                "cid": df["cid"][i],
+                ia: df[ia][i].item(),
+            }
+            data.append(cie)
     return data

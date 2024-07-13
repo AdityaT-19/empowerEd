@@ -3,7 +3,12 @@ from pydantic import BaseModel
 from tensorflow.keras.models import load_model
 import numpy as np
 
-from fileprocess import prepareStudentandParentData, readExcel
+from fileprocess import (
+    prepareCieData,
+    prepareGradeData,
+    prepareStudentandParentData,
+    readExcel,
+)
 from models.ctc_pred import Data
 
 app = FastAPI()
@@ -39,6 +44,20 @@ async def predict(data: Data):
 
 @app.post("/processStudentandParentData")
 async def processStudentandParentData(file: UploadFile):
-    df = readExcel(file, "student")
+    df = readExcel(file)
     data = prepareStudentandParentData(df)
     return {"studentAndParents": data}
+
+
+@app.post("/processGradeData")
+async def processGradeData(file: UploadFile):
+    df = readExcel(file, "grade")
+    data = prepareGradeData(df)
+    return {"usnGradeandCie": data}
+
+
+@app.post("/processCieData")
+async def processCieData(file: UploadFile):
+    df = readExcel(file)
+    data = prepareCieData(df)
+    return {"allInOneFile": data}
