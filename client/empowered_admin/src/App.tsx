@@ -11,6 +11,9 @@ import DeletePlacementCoordinator from './pages/deletePlacementCoordinator';
 import AddStudentAndParent from './pages/enrollStudentAndParent';
 import UpdateStudent from './pages/updateStudent';
 import ViewAllStudentsWithButton from './pages/viewStudentsWithUpdateButton';
+import TeachCourse from './pages/teachCourse';
+import AddCoursesForStudent from './pages/addCoursesforStudent';
+import MassUpdateGrade from './pages/massGradeUpdates';
 export default function App() {
   return (
     <Router>
@@ -18,15 +21,14 @@ export default function App() {
         <Route path='/signin' element={<SignIn />} />
         <Route path='/' element={<Dashboard />} />
         <Route path='/enrollStudentAndParent' element={<AddStudentAndParent />} />
-        <Route path='/updateGrades' element={<Dashboard />} />
+        <Route path='/updateGrades' element={<MassUpdateGrade />} />
         <Route path='/addTeachers' element={<AddTeachers />} />
-        <Route path='/addCoursesforStudent' element={<AddCourses/>}/>
         <Route path='/viewAllStudents' element={<ViewAllStudents />} />
         <Route path='/viewCourses' element={< ViewAllCourses/>} />
         <Route path='/viewTeachers' element={<ViewAllTeachers />} />
-        <Route path='/addCoursesForStudent' element={<AddCourses/>}/>
+        <Route path='/addCoursesForStudent' element={<AddCoursesForStudent/>}/>
         <Route path='/addCourses' element={<AddCourses/>}/>
-        <Route path='/teachCourse' element={<AddCourses/>}/>
+        <Route path='/teachCourse' element={<TeachCourse/>}/>
         <Route path='/updateStudent' element={<ViewAllStudentsWithButton/>}/>
         <Route path='/updateStudentAfterClick/:id' element={<UpdateStudent/>}/>
         <Route path='/addCoordniator' element={<AddPlacementCoordinator/>}/>

@@ -106,9 +106,9 @@ function CreateTeacherForm({ handleSubmit }: { handleSubmit: (event: React.FormE
         margin="normal"
         required
         fullWidth
-        id="usn"
-        label="Enter USN"
-        name="usn"
+        id="tid"
+        label="Enter Teacher ID"
+        name="tid"
         autoFocus
       />
 
@@ -121,6 +121,14 @@ function CreateTeacherForm({ handleSubmit }: { handleSubmit: (event: React.FormE
         name="cid"
       />
 
+      <TextField
+        margin="normal"
+        required
+        fullWidth
+        id="section"
+        label="Enter Section"
+        name="section"
+      />
 
       <Button
         type="submit"
@@ -128,13 +136,13 @@ function CreateTeacherForm({ handleSubmit }: { handleSubmit: (event: React.FormE
         variant="contained"
         sx={{ mt: 3, mb: 2, py: 1.5 }}
       >
-        Add This Additional Course
+        Create Relationship
       </Button>
     </Box>
   );
 }
 
-export default function AddCoursesForStudent() {
+export default function TeachCourse() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -145,13 +153,13 @@ export default function AddCoursesForStudent() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const usn = formData.get('usn') as string;
+    const tid = formData.get('tid') as string;
     const cid = formData.get('cid') as string;
-    
-    const requestData = {"student":{usn}, "course":{cid}};
+    const section = formData.get('section') as string;
+    const requestData = { tid, cid, section };
 
     try {
-      const response = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/addAdditionalCourses', {
+      const response = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/teachCourse', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -160,9 +168,9 @@ export default function AddCoursesForStudent() {
       });
 
       if (response.ok) {
-        toast.success('Course added successfully');
+        toast.success('Teacher Course Relationship created successfully');
       } else {
-        toast.error('Failed to add Course');
+        toast.error('Failed to create relationship');
       }
     } catch (error) {
       console.error('Error creating relationship:', error);

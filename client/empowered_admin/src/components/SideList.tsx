@@ -83,7 +83,7 @@ export function SecondaryListItems({navigate}:NavigatorProps){
       <ListItemIcon>
         <Add />
       </ListItemIcon>
-      <ListItemText primary="Add Courses" />
+      <ListItemText primary="Course for Student" />
 
     </ListItemButton >
   

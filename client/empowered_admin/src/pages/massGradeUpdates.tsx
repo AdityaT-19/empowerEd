@@ -9,21 +9,19 @@ import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import { MainListItems, SecondaryListItems } from '../components/SideList';
 import { useNavigate } from 'react-router-dom';
-import { TextField, Button } from '@mui/material';
-import { useState } from 'react';
-import { signOut } from 'firebase/auth';
-import auth from '../FirebaseSetup';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { LogoutOutlined } from '@mui/icons-material';
+import auth from '../FirebaseSetup';
+import { signOut } from 'firebase/auth';
+import { Dropzone, FileMosaic } from '@dropzone-ui/react';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Button } from '@mui/material';
 
 const drawerWidth: number = 240;
 
@@ -77,101 +75,45 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const defaultTheme = createTheme();
 
-function CreateTeacherForm({ handleSubmit }: { handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void }) {
-  const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    handleSubmit(event);
-  };
-
-  return (
-    <Box
-      component="form"
-      onSubmit={submitForm}
-      noValidate
-      sx={{
-        mt: 4,
-        p: 3,
-        borderRadius: 2,
-        boxShadow: 3,
-        backgroundColor: 'background.paper',
-        maxWidth: 500,
-        mx: 'auto', // centers the form horizontally
-      }}
-    >
-      <Typography variant="h5" component="h1" gutterBottom sx={{ textAlign: 'center', mb: 3 }}>
-        Create Teacher Course Relationship
-      </Typography>
-
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="usn"
-        label="Enter USN"
-        name="usn"
-        autoFocus
-      />
-
-      <TextField
-        margin="normal"
-        required
-        fullWidth
-        id="cid"
-        label="Enter Course ID"
-        name="cid"
-      />
-
-
-      <Button
-        type="submit"
-        fullWidth
-        variant="contained"
-        sx={{ mt: 3, mb: 2, py: 1.5 }}
-      >
-        Add This Additional Course
-      </Button>
-    </Box>
-  );
-}
-
-export default function AddCoursesForStudent() {
-  const [open, setOpen] = useState(false);
+export default function MassUpdateGrade() {
+  const [open, setOpen] = React.useState(true);
   const navigate = useNavigate();
+  const [files, setFiles] = React.useState([]);
 
-  const toggleDrawer = () => {
-    setOpen(!open);
+  const updateFiles = (incomingFiles: any) => {
+    setFiles(incomingFiles);
   };
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const usn = formData.get('usn') as string;
-    const cid = formData.get('cid') as string;
-    
-    const requestData = {"student":{usn}, "course":{cid}};
+  const handleFileUpload = async () => {
+    const formData = new FormData();
+    files.forEach((file:any) => {
+      formData.append('files', file.file);
+    });
 
     try {
-      const response = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/addAdditionalCourses', {
+      let response = await fetch("https://empowered-py.onrender.com/processGradeData", {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
+        body: formData
       });
-
+      response=await response.json()
+      console.log(response)
       if (response.ok) {
-        toast.success('Course added successfully');
+        toast.success('Grades updated successfully');
       } else {
-        toast.error('Failed to add Course');
+        toast.error('Failed to update grades');
       }
     } catch (error) {
-      console.error('Error creating relationship:', error);
+      console.error('Error updating grades:', error);
       toast.error('An error occurred. Please try again later.');
     }
   };
 
   const navigateTo = (url: string) => {
     navigate(url);
+  };
+
+  const toggleDrawer = () => {
+    setOpen(!open);
   };
 
   return (
@@ -196,13 +138,7 @@ export default function AddCoursesForStudent() {
             >
               <MenuIcon />
             </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
+            <Typography component="h1" variant="h6" color="inherit" noWrap sx={{ flexGrow: 1 }}>
               Admin Dashboard
             </Typography>
             <IconButton
@@ -252,9 +188,7 @@ export default function AddCoursesForStudent() {
           component="main"
           sx={{
             backgroundColor: (theme) =>
-              theme.palette.mode === 'light'
-                ? theme.palette.grey[100]
-                : theme.palette.grey[900],
+              theme.palette.mode === 'light' ? theme.palette.grey[100] : theme.palette.grey[900],
             flexGrow: 1,
             height: '100vh',
             overflow: 'auto',
@@ -262,7 +196,19 @@ export default function AddCoursesForStudent() {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <CreateTeacherForm handleSubmit={handleSubmit} />
+            <Typography variant="h6" gutterBottom>
+              Add Your Excel Sheet to Update Grades
+            </Typography>
+            <Dropzone onChange={updateFiles} value={files} accept=".xlsx">
+              {files.map((file:any) => (
+                <FileMosaic key={file.name} {...file} preview />
+              ))}
+            </Dropzone>
+            <Box sx={{ mt: 2 }}>
+              <Button onClick={handleFileUpload}>
+                Upload
+              </Button>
+            </Box>
           </Container>
         </Box>
         <ToastContainer />

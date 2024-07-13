@@ -151,10 +151,12 @@ function CreateStudentForm({ handleSubmit }: { handleSubmit: (event: React.FormE
         const parentResult= await createUserWithEmailAndPassword(auth,parentData.email,parentData.phNo);
         if (studentResult&&parentResult) {
           // Update student role
-          await updateProfile(studentResult.user, { displayName: 'student' });
-          await updateProfile(parentResult.user,{displayName:'parent'});
+          await updateProfile(studentResult.user, { displayName: 'student',photoURL:`${studentData.usn}`});
+          await updateProfile(parentResult.user,{displayName:'parent', photoURL:`${parentData.usn}`});
           console.log(studentResult.user.displayName)
           console.log(parentResult.user.displayName)
+          console.log(studentResult.user.photoURL)
+          console.log(parentResult.user.photoURL)
   
           const response = await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/createStudentParentEnroll', {
             method: 'POST',
@@ -321,6 +323,7 @@ function AddStudentAndParent() {
       setOpen(!open);
     };
   
+     //Dummy
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>, studentData: any, parentData: any) => {
       event.preventDefault();
       try {
