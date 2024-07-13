@@ -1,12 +1,18 @@
-import 'package:empowered_placement_co/app/modules/dashboard/views/dashboard.dart';
-import 'package:empowered_placement_co/app/modules/login/bindings/login_bindings.dart';
-import 'package:empowered_placement_co/app/modules/login/views/login_screen.dart';
-import 'package:empowered_placement_co/app/modules/splash/views/splash.dart';
-import 'package:empowered_placement_co/app/modules/splash/bindings/splash_bindings.dart';
 import 'package:get/get.dart';
 
+import '../modules/add_comp/bindings/add_comp_binding.dart';
+import '../modules/add_comp/views/add_comp_view.dart';
+import '../modules/dashboard/views/dashboard.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
+import '../modules/job_list/bindings/job_list_binding.dart';
+import '../modules/job_list/views/job_list_view.dart';
+import '../modules/login/bindings/login_bindings.dart';
+import '../modules/login/views/login_screen.dart';
+import '../modules/schedule/bindings/schedule_binding.dart';
+import '../modules/schedule/views/schedule_view.dart';
+import '../modules/splash/bindings/splash_bindings.dart';
+import '../modules/splash/views/splash.dart';
 
 part 'app_routes.dart';
 
@@ -35,6 +41,21 @@ class AppPages {
       name: _Paths.DASHBOARD,
       page: () => DashboardScreen(),
       binding: SplashBindings(),
+    ),
+    GetPage(
+      name: _Paths.ADD_COMP,
+      page: () => AddCompView(),
+      binding: AddCompBinding(),
+    ),
+    GetPage(
+      name: _Paths.JOB_LIST,
+      page: () => JobListView(),
+      binding: JobListBinding(),
+    ),
+    GetPage(
+      name: _Paths.SCHEDULE,
+      page: () => ScheduleView(),
+      binding: ScheduleBinding(),
     ),
   ];
 }

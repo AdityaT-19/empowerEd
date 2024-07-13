@@ -45,7 +45,7 @@ class DashboardScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'For Parents',
+                    'For Teachers',
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 18,
@@ -58,6 +58,8 @@ class DashboardScreen extends StatelessWidget {
                 Icons.event_note, 'Update Attendance', Routes.ATTENDANCE),
             buildDrawerItem(Icons.assignment, 'Update CIE', Routes.CIE),
             buildDrawerItem(Icons.school, 'Counselling', Routes.COUNSEL),
+            buildDrawerItem(
+                Icons.file_upload, 'Bulk Update', Routes.BULK_UPDATE),
           ],
         ),
       ),
@@ -84,6 +86,9 @@ class DashboardScreen extends StatelessWidget {
                 SizedBox(height: 20.0),
                 buildElevatedButton(
                     'Counselling', Routes.COUNSEL, Icons.file_copy_outlined),
+                SizedBox(height: 20.0),
+                buildElevatedButton(
+                    'Upload Excel', Routes.BULK_UPDATE, Icons.file_upload),
               ],
             ),
           ),
