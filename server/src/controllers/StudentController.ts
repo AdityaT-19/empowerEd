@@ -121,7 +121,7 @@ class StudentController {
          */
     try {
       const result = await AxiosHandler.post(
-        "https://placemate-predict-m994.onrender.com/predict",
+        `${process.env.PY_SERVER}/predict`,
         req.body,
         {
           "Content-Type": "application/json",
