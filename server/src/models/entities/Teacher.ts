@@ -5,6 +5,7 @@ const teacher = pgTable("teacher", {
   tid: text("tid").notNull().unique(),
   name: text("name").notNull(),
   dept: text("dept").notNull(),
+  email: text("email").notNull(),
 });
 
 export default teacher;
