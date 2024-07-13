@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "352036931719",
+    "project_id": "empowered-ed9ae",
+    "storage_bucket": "empowered-ed9ae.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352036931719:android:c88eb615a6ee34a1721022",
+        "android_client_info": {
+          "package_name": "com.cyborgs.empowered_teacher"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGTeyq6Wzxc283tLAPFzMfTYZRDdYVxKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352036931719:android:043e6a2bb440df53721022",
+        "android_client_info": {
+          "package_name": "com.example.etech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGTeyq6Wzxc283tLAPFzMfTYZRDdYVxKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
