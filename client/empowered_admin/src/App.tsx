@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import SignIn from './pages/signin';
 import Dashboard from './pages/dashboard';
-
+import ViewAllStudents from './pages/viewAllStudents';
+import ViewAllTeachers from './pages/viewAllTeachers';
+import ViewAllCourses from './pages/viewAllCourses';
 export default function App() {
   return (
     <Router>
@@ -12,9 +14,9 @@ export default function App() {
         <Route path='/updateGrades' element={<Dashboard />} />
         <Route path='/addTeachers' element={<Dashboard />} />
         <Route path='/addCourses' element={<Dashboard />} />
-        <Route path='/viewAllStudents' element={<Dashboard />} />
-        <Route path='/viewCourses' element={<Dashboard />} />
-        <Route path='/viewTeachers' element={<Dashboard />} />
+        <Route path='/viewAllStudents' element={<ViewAllStudents />} />
+        <Route path='/viewCourses' element={< ViewAllCourses/>} />
+        <Route path='/viewTeachers' element={<ViewAllTeachers />} />
         <Route path='/addCourses' element={<Dashboard/>}/>
         <Route path='/dropCourses' element={<Dashboard/>}/>
         <Route path='/updateStudent' element={<Dashboard/>}/>
