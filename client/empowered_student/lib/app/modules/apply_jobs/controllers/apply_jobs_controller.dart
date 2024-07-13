@@ -1,61 +1,99 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApplyJobsController extends GetxController {
   //TODO: Implement ApplyJobsController
-  static final List<Map<String, dynamic>> companies = [
+  final isLoading = false.obs;
+  final List<Map<String, dynamic>> companies = [
     {
+      'cid': 1,
       'name': 'Google',
       'role': 'Software Engineer',
       'ctc': '30 LPA',
       'location': 'Mountain View, CA',
-      'inhand': '25 LPA',
       'technicalExpertise': 'Flutter, Dart, Firebase'
-    },
-    {
-      'name': 'Amazon',
-      'role': 'Data Scientist',
-      'ctc': '28 LPA',
-      'location': 'Seattle, WA',
-      'inhand': '23 LPA',
-      'technicalExpertise': 'Python, ML, AWS'
-    },
-    {
-      'name': 'Microsoft',
-      'role': 'Product Manager',
-      'ctc': '25 LPA',
-      'location': 'Redmond, WA',
-      'inhand': '21 LPA',
-      'technicalExpertise': 'Agile, Scrum, UX'
-    },
-    {
-      'name': 'Apple',
-      'role': 'Hardware Engineer',
-      'ctc': '27 LPA',
-      'location': 'Cupertino, CA',
-      'inhand': '22 LPA',
-      'technicalExpertise': 'Verilog, VHDL, PCB Design'
-    },
-    {
-      'name': 'Facebook',
-      'role': 'UI/UX Designer',
-      'ctc': '22 LPA',
-      'location': 'Menlo Park, CA',
-      'inhand': '19 LPA',
-      'technicalExpertise': 'Sketch, Figma, Adobe XD'
-    },
-    {
-      'name': 'Netflix',
-      'role': 'Machine Learning Engineer',
-      'ctc': '32 LPA',
-      'location': 'Los Gatos, CA',
-      'inhand': '28 LPA',
-      'technicalExpertise': 'Python, TensorFlow, Keras'
     },
   ];
   final count = 0.obs;
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+    await getCompanies();
+  }
+
+  Future<void> getCompanies() async {
+    isLoading.value = true;
+    final url = Uri.parse(
+        'https://empowered-dw0m.onrender.com/api/v1/student/getCompanies');
+    final res = await http.get(url);
+    final body = jsonDecode(res.body)['data'];
+    companies.clear();
+    print(body);
+    body.forEach((company) {
+      companies.add({
+        'cid': company['id'],
+        'name': company['name'],
+        'role': company['jobRole'],
+        'ctc': company['ctc'],
+        'location': company['jobLocation'],
+        'technicalExpertise': company['skills']
+      });
+    });
+    isLoading.value = false;
+  }
+
+  Future<void> applyForJob(int cid) async {
+    final prefs = await SharedPreferences.getInstance();
+    final usn = prefs.getString('usn');
+    final curl = Uri.parse(
+        'https://empowered-dw0m.onrender.com/api/v1/placement/getStudentsByCompany/$cid');
+    final cres = await http.get(curl);
+    final cbody = jsonDecode(cres.body)['data'];
+    final applied = cbody.any((student) => student['usn'] == usn);
+
+    if (applied) {
+      Get.snackbar(
+        'Already Applied',
+        'You have already applied for this job',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } else {
+      final url = Uri.parse(
+          'https://empowered-dw0m.onrender.com/api/v1/student/applyForCompany');
+      final res = await http.post(
+        url,
+        body: jsonEncode({
+          'usn': usn,
+          'cid': cid,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (res.statusCode == 200) {
+        Get.snackbar(
+          'Applied Successfully',
+          'You have successfully applied for this job',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          'Failed to Apply',
+          'Failed to apply for this job. Please try again later',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    }
   }
 
   @override
