@@ -42,7 +42,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyChOlKonPUXzvN2_UaRgujx5pnh7qyQH0c',
-    appId: '1:352036931719:web:f73346ea36ed0519721022',
+    appId: '1:352036931719:web:f40224865aa61353721022',
     messagingSenderId: '352036931719',
     projectId: 'empowered-ed9ae',
     authDomain: 'empowered-ed9ae.firebaseapp.com',
@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCGTeyq6Wzxc283tLAPFzMfTYZRDdYVxKI',
-    appId: '1:352036931719:android:c88eb615a6ee34a1721022',
+    appId: '1:352036931719:android:87acd31c8002dd1a721022',
     messagingSenderId: '352036931719',
     projectId: 'empowered-ed9ae',
     storageBucket: 'empowered-ed9ae.appspot.com',
