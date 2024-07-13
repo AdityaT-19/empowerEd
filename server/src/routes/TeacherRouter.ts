@@ -8,7 +8,7 @@ router.get("/:id", TeacherController.getTeacherById);
 router.get("/studentReports/:usn", TeacherController.getStudentReports);
 
 router.post("/fetchStudentList", TeacherController.fetchStudentList);
-router.post("/markAttendance", TeacherController.markAttendence);
+router.post("/markAttendance", TeacherController.markAttendance);
 
 router.patch("/updateMarks", TeacherController.updateMarks);
 router.patch("/massUpdateMarks", TeacherController.massUpdateMarks);

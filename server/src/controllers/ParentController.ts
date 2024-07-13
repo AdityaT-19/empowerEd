@@ -9,11 +9,8 @@ class ParentController {
    */
   async getParentsDetails(req: Request, res: Response) {
     try {
-      const phNo = req.params.id;
-      const result = await db
-        .select()
-        .from(parent)
-        .where(eq(parent.phNo, phNo));
+      const usn = req.params.usn;
+      const result = await db.select().from(parent).where(eq(parent.usn, usn));
       res.status(201).json({ data: result });
     } catch (e) {
       console.log(e);

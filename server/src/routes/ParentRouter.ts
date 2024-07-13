@@ -6,7 +6,7 @@ const router = Router();
  * Routes for parent
  */
 router.get(
-  "/getStudentsMarksAndAttendence/:usn",
+  "/getStudentsMarksAndAttendance/:usn",
   ParentController.getStudentsAttendanceAndMarks
 );
 

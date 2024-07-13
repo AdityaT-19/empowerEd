@@ -9,6 +9,11 @@ const router = Router();
 router.get("/", (req: Request, res: Response) => {
   res.status(200).json({ message: "Working" });
 });
+
+router.get(
+  "/getPlacementCoordinators",
+  PlacementCoodinatorController.getPlacementCoordinators
+);
 router.post("/addCompany", PlacementCoodinatorController.addCompany);
 router.post("/bookSlot", PlacementCoodinatorController.BookSlot);
 router.get("/getCompanies", PlacementCoodinatorController.getCompanies);
