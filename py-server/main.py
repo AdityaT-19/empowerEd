@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
 from tensorflow.keras.models import load_model
 import numpy as np
 
+from fileprocess import prepareStudentandParentData, readExcel
 from models.ctc_pred import Data
 
 app = FastAPI()
@@ -34,3 +35,10 @@ async def predict(data: Data):
     y = model.predict(ip)
     y = y[0][0] * 0.9
     return {"ctc": y}
+
+
+@app.post("/processStudentandParentData")
+async def processStudentandParentData(file: UploadFile):
+    df = readExcel(file, "student")
+    data = prepareStudentandParentData(df)
+    return {"studentAndParents": data}

@@ -132,10 +132,70 @@ class PlacementCoordinatorController {
         .from(students)
         .where(eq(students.usn, usn));
 
+      const mailHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <title>Interview Schedule</title>
+          <style>
+              body {
+                  font-family: Arial, sans-serif;
+                  color: #333;
+              }
+              .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+              }
+              .header {
+                  background-color: #4CAF50;
+                  color: white;
+                  padding: 10px;
+                  text-align: center;
+              }
+              .content {
+                  padding: 20px;
+              }
+              .footer {
+                  text-align: center;
+                  padding: 10px;
+                  color: #777;
+                  font-size: 12px;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <div class="header">
+                  <h1>Interview Scheduled</h1>
+              </div>
+              <div class="content">
+                  <p>Dear ${usn},</p>
+                  <p>Your interview for the company ${compName} has been scheduled as follows:</p>
+                  <ul>
+                      <li><strong>Start:</strong> ${start_time}</li>
+                      <li><strong>End:</strong> ${end_time}</li>
+                      <li><strong>Venue:</strong> ${location}</li>
+                  </ul>
+                  <p>Please arrive at the venue 15 minutes early and bring your resume, a valid ID, and any other necessary documents.</p>
+                  <p>If you have any questions, feel free to contact us.</p>
+                  <p>Best regards,</p>
+                  <p>Placement Cell</p>
+              </div>
+              <div class="footer">
+                  <p>This is an automated message, please do not reply.</p>
+              </div>
+          </div>
+      </body>
+      </html>
+      
+      `;
+
       const mail = {
         to: email[0].email,
         subject: "Interview Schedule",
-        text: "Please find the attached ical file for interview schedule",
+        html: mailHtml,
         icalEvent: {
           content: icalData,
           method: "request",
@@ -192,6 +252,60 @@ class PlacementCoordinatorController {
         .select({ email: students.email })
         .from(students)
         .where(eq(students.usn, interviewDetails[0].usn));
+
+      const mailHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Interview Cancellation</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    color: #333;
+                }
+                .container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                }
+                .header {
+                    background-color: #FF0000;
+                    color: white;
+                    padding: 10px;
+                    text-align: center;
+                }
+                .content {
+                    padding: 20px;
+                }
+                .footer {
+                    text-align: center;
+                    padding: 10px;
+                    color: #777;
+                    font-size: 12px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>Interview Cancelled</h1>
+                </div>
+                <div class="content">
+                    <p>Dear ${interviewDetails[0].usn},</p>
+                    <p>We regret to inform you that your interview scheduled for ${cmpName[0]} has been cancelled:</p>
+                    <p>We apologize for any inconvenience this may cause. Please feel free to reach out to us if you have any questions or need further assistance.</p>
+                    <p>Best regards,</p>
+                    <p>Placement Office</p>
+                
+                </div>
+                <div class="footer">
+                    <p>This is an automated message, please do not reply.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        `;
 
       const mail = {
         to: email[0].email,
@@ -308,6 +422,66 @@ class PlacementCoordinatorController {
         .select({ email: students.email })
         .from(students)
         .where(eq(students.usn, interviewDetails[0].usn));
+
+      const mailHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <meta charset="UTF-8">
+          <title>Interview Schedule</title>
+          <style>
+              body {
+                  font-family: Arial, sans-serif;
+                  color: #333;
+              }
+              .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  padding: 20px;
+              }
+              .header {
+                  background-color: #4CAF50;
+                  color: white;
+                  padding: 10px;
+                  text-align: center;
+              }
+              .content {
+                  padding: 20px;
+              }
+              .footer {
+                  text-align: center;
+                  padding: 10px;
+                  color: #777;
+                  font-size: 12px;
+              }
+          </style>
+      </head>
+      <body>
+          <div class="container">
+              <div class="header">
+                  <h1>Interview Scheduled</h1>
+              </div>
+              <div class="content">
+                  <p>Dear ${interviewDetails[0].usn},</p>
+                  <p>Your interview for the company ${compName} has been scheduled as follows:</p>
+                  <ul>
+                      <li><strong>Start:</strong> ${start_time}</li>
+                      <li><strong>End:</strong> ${end_time}</li>
+                      <li><strong>Venue:</strong> ${location}</li>
+                  </ul>
+                  <p>Please arrive at the venue 15 minutes early and bring your resume, a valid ID, and any other necessary documents.</p>
+                  <p>If you have any questions, feel free to contact us.</p>
+                  <p>Best regards,</p>
+                  <p>Placement Cell</p>
+              </div>
+              <div class="footer">
+                  <p>This is an automated message, please do not reply.</p>
+              </div>
+          </div>
+      </body>
+      </html>
+      
+      `;
 
       const mail = {
         to: email[0].email,
