@@ -6,7 +6,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 
 import PeopleIcon from '@mui/icons-material/People';
 
-import { Add, BookSharp, ContactPage, DataObject, Delete, ForkLeft, Grade, List, Remove, SchoolRounded, SystemUpdate, Update, UploadFile } from '@mui/icons-material';
+import { Add, BookSharp, ContactPage, DataObject, ForkLeft, Grade, List, Remove, SchoolRounded, SystemUpdate, UploadFile } from '@mui/icons-material';
 import React from 'react';
 
 interface NavigatorProps{

@@ -93,7 +93,7 @@ interface FormData {
 
 
 
-function CreateStudentForm({ handleSubmit }: { handleSubmit: (event: React.FormEvent<HTMLFormElement>, student: any, parent: any) => void }) {
+function CreateStudentForm({ }: { handleSubmit: (event: React.FormEvent<HTMLFormElement>, student: any, parent: any) => void }) {
     const [dept, setDept] = useState('');
 
     const handleDeptChange = (event: SelectChangeEvent<string>) => {
