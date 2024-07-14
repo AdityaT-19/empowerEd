@@ -75,8 +75,8 @@ class AppPages {
     GetPage(
       name: _Paths.UPDATE_CIE,
       page: () => UpdateCieView(
-          courseCode: Get.parameters['courseCode'] as String,
-          section: Get.parameters['section'] as String),
+          courseCode: Get.arguments['courseCode'] as String,
+          section: Get.arguments['section'] as String),
       binding: UpdateCieBinding(),
     ),
     GetPage(

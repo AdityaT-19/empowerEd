@@ -14,14 +14,19 @@ class AttendanceView extends StatelessWidget {
         title: Text('Update Attendance'),
         backgroundColor: Colors.deepPurple, // Purple app bar
       ),
-      body: ListView.builder(
-        itemCount: attendanceController.courses.length,
-        itemBuilder: (context, index) {
-          return CourseCard(
-            courseCode: attendanceController.courses[index]['courseCode']!,
-            section: attendanceController.courses[index]['section']!,
-          );
-        },
+      body: Obx(
+        () => attendanceController.isLoading.value
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: attendanceController.courses.length,
+                itemBuilder: (context, index) {
+                  return CourseCard(
+                    courseCode: attendanceController.courses[index]
+                        ['courseCode']!,
+                    section: attendanceController.courses[index]['section']!,
+                  );
+                },
+              ),
       ),
     );
   }

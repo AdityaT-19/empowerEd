@@ -1,14 +1,10 @@
+import 'package:empowered_teacher/app/modules/cie/controllers/cie_controller.dart';
 import 'package:empowered_teacher/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CieView extends StatelessWidget {
-  final List<Map<String, String>> courses = [
-    {'courseCode': 'CSE101', 'section': 'A'},
-    {'courseCode': 'ECE202', 'section': 'B'},
-    {'courseCode': 'ME303', 'section': 'C'},
-  ];
-
+  final CieController cieController = Get.find<CieController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,15 +16,22 @@ class CieView extends StatelessWidget {
         foregroundColor: Colors.white,
         backgroundColor: Colors.deepPurple,
       ),
-      body: ListView.builder(
-        itemCount: courses.length,
-        itemBuilder: (context, index) {
-          return CourseCard(
-            courseCode: courses[index]['courseCode']!,
-            section: courses[index]['section']!,
+      body: Obx(() {
+        if (cieController.isLoading.value) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
-        },
-      ),
+        }
+        return ListView.builder(
+          itemCount: cieController.courses.length,
+          itemBuilder: (context, index) {
+            return CourseCard(
+              courseCode: cieController.courses[index]['courseCode']!,
+              section: cieController.courses[index]['section']!,
+            );
+          },
+        );
+      }),
     );
   }
 }
@@ -70,7 +73,7 @@ class CourseCard extends StatelessWidget {
         ),
         onTap: () {
           Get.toNamed(Routes.UPDATE_CIE,
-              parameters: {'courseCode': courseCode, 'section': section});
+              arguments: {'courseCode': courseCode, 'section': section});
         },
       ),
     );

@@ -1,14 +1,10 @@
+import 'package:empowered_teacher/app/modules/counsel/controllers/counsel_controller.dart';
 import 'package:empowered_teacher/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class CounselView extends StatelessWidget {
-  final List<Map<String, String>> courses = [
-    {'courseCode': 'CSE101', 'section': 'A'},
-    {'courseCode': 'ECE202', 'section': 'B'},
-    {'courseCode': 'ME303', 'section': 'C'},
-  ];
-
+  final counselController = Get.find<CounselController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,15 +13,22 @@ class CounselView extends StatelessWidget {
         title: Text('Update Attendance'),
         backgroundColor: Colors.deepPurple, // Purple app bar
       ),
-      body: ListView.builder(
-        itemCount: courses.length,
-        itemBuilder: (context, index) {
-          return CourseCard(
-            courseCode: courses[index]['courseCode']!,
-            section: courses[index]['section']!,
+      body: Obx(() {
+        if (counselController.isLoading.value) {
+          return Center(
+            child: CircularProgressIndicator(),
           );
-        },
-      ),
+        }
+        return ListView.builder(
+          itemCount: counselController.courses.length,
+          itemBuilder: (context, index) {
+            return CourseCard(
+              courseCode: counselController.courses[index]['courseCode']!,
+              section: counselController.courses[index]['section']!,
+            );
+          },
+        );
+      }),
     );
   }
 }
