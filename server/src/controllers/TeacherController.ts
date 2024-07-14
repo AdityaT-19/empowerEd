@@ -89,12 +89,21 @@ class TeacherController {
           )
         );
 
-      // Combine results into a single object
-      const response = {
-        courseDetails: course,
-        students: studentsResult,
-      };
-
+      let response=[];
+      for(let i=0;i<studentsResult.length;i++){
+        if(studentsResult[i].students&&studentsResult[i].stud_course){
+        let newObj={
+          "usn":studentsResult[i].students?.usn,
+          "name":studentsResult[i].students?.name,
+          "sem":studentsResult[i].students?.sem,
+          "section":studentsResult[i].students?.section,
+          "ia1":studentsResult[i].stud_course?.ia1,
+          "ia2":studentsResult[i].stud_course?.ia2,
+          "ia3":studentsResult[i].stud_course?.ia3
+        };
+        response.push(newObj);
+      }
+      }
        
       res.status(200).json({ data: response });
     } catch (e) {
