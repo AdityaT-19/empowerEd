@@ -722,6 +722,133 @@ class AdminController {
       res.status(400).json({message:"Something Went Wrong!"})
     }
   }
+  async sendEmailConformationToPlacementCoordinator(req:Request,res:Response){
+    try{
+      const {usn}=req.body;
+      const result=await db.select().from(students).where(eq(students.usn,usn));
+      const email=result[0].email;
+      console.log(email)
+      const mailHtml = `
+        <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Registration Confirmation</title>
+              <style>
+                /* Reset default styles */
+                body,
+                h1,
+                p {
+                  margin: 0;
+                  padding: 0;
+                }
+                body {
+                  font-family: "Helvetica Neue", Arial, sans-serif;
+                  line-height: 1.6;
+                  background-color: #f2f2f2;
+                  padding: 20px;
+                }
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background-color: #fff;
+                  padding: 30px;
+                  border-radius: 10px;
+                  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  text-align: center;
+                  margin-bottom: 30px;
+                }
+                .header img {
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 10px;
+                }
+                h1 {
+                  color: #673ab7;
+                  text-align: center;
+                  font-size: 24px;
+                  margin-bottom: 20px;
+                }
+                p {
+                  color: #555;
+                  font-size: 16px;
+                  margin-bottom: 20px;
+                }
+                ul {
+                  list-style-type: none;
+                  padding: 0;
+                }
+                li {
+                  margin-bottom: 10px;
+                }
+                .button {
+                  display: inline-block;
+                  background-color: #673ab7;
+                  color: #fff;
+                  text-decoration: none;
+                  padding: 10px 20px;
+                  border-radius: 5px;
+                  margin-top: 20px;
+                  text-align: center;
+                }
+                .button:hover {
+                  background-color: #5a2f99;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 30px;
+                  color: #888;
+                  font-size: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <img src="./logo.png" alt="Welcome to EmpowerEd" />
+                </div>
+                <h1>Congratulations and Welcome to EmpowerEd!</h1>
+                <p>Dear Student,</p>
+                <p>
+                  We are thrilled to inform you that you have been selected as a Placement
+                  Coordinator for our platform <strong>EmpowerEd</strong>. You have
+                  successfully registered and can now begin your role in helping your
+                  peers connect with potential employers.
+                </p>
+                  Should you have any questions or need assistance, please feel free to
+                  contact us.
+                </p>
+                <p class="footer">Best regards,<br />EmpowerEd Team</p>
+              </div>
+            </body>
+          </html>
+          
+          `;
+
+          const mail = {
+            to: email,
+            subject: "empowerEd - Placement Coordinator Registration Sucessful",
+            html: mailHtml,
+          };
+          // Send mail
+          contactEmail.sendMail(mail, (err, info) => {
+            if (err) {
+              console.log(err);
+              throw new Error("Something went wrong");
+            } else {
+              res.status(201).json({
+                message: "Mail Sent",
+              });
+            }
+          });
+    }catch(e){
+      console.log(e)
+      res.status(400).json({message:"Something Went Wrong!"})
+    }
+  }
 }
 
 export default new AdminController();
