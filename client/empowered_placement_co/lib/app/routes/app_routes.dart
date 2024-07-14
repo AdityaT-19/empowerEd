@@ -10,6 +10,7 @@ abstract class Routes {
   static const ADD_COMP = _Paths.ADD_COMP;
   static const JOB_LIST = _Paths.JOB_LIST;
   static const SCHEDULE = _Paths.SCHEDULE;
+  static const PASS_CHANGE = _Paths.PASS_CHANGE;
 }
 
 abstract class _Paths {
@@ -21,4 +22,5 @@ abstract class _Paths {
   static const ADD_COMP = '/add-comp';
   static const JOB_LIST = '/job-list';
   static const SCHEDULE = '/schedule';
+  static const PASS_CHANGE = '/pass-change';
 }

@@ -61,6 +61,8 @@ class DashboardScreen extends StatelessWidget {
             buildDrawerItem(Icons.school, 'Counselling', Routes.COUNSEL),
             buildDrawerItem(
                 Icons.file_upload, 'Bulk Update', Routes.BULK_UPDATE),
+            buildDrawerItem(
+                Icons.key_outlined, 'Change Password', Routes.PASS_CHANGE),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.deepPurple),
               title: const Text('Logout',

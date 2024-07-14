@@ -13,6 +13,10 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_bindings.dart';
 import '../modules/login/views/login_screen.dart';
+import '../modules/pass_change/bindings/pass_change_binding.dart';
+import '../modules/pass_change/bindings/pass_change_binding.dart';
+import '../modules/pass_change/views/pass_change_view.dart';
+import '../modules/pass_change/views/pass_change_view.dart';
 import '../modules/splash/bindings/splash_bindings.dart';
 import '../modules/splash/views/splash.dart';
 import '../modules/update_att/bindings/update_att_binding.dart';
@@ -90,6 +94,12 @@ class AppPages {
       name: _Paths.BULK_UPDATE,
       page: () => BulkUpdateView(),
       binding: BulkUpdateBinding(),
+    ),
+    GetPage(
+      name: _Paths.PASS_CHANGE,
+      page: () => PassChangeView(),
+      binding: PassChangeBinding(),
+      children: [],
     ),
   ];
 }

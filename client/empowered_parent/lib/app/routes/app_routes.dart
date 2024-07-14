@@ -11,6 +11,7 @@ abstract class Routes {
   static const CIE = _Paths.CIE;
   static const PREV_RES = _Paths.PREV_RES;
   static const COUNSEL = _Paths.COUNSEL;
+  static const PASS_CHANGE = _Paths.PASS_CHANGE;
 }
 
 abstract class _Paths {
@@ -23,4 +24,5 @@ abstract class _Paths {
   static const CIE = '/cie';
   static const PREV_RES = '/prev-res';
   static const COUNSEL = '/counsel';
+  static const PASS_CHANGE = '/pass-change';
 }

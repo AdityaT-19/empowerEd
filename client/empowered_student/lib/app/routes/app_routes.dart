@@ -13,6 +13,8 @@ abstract class Routes {
   static const PREV_RES = _Paths.PREV_RES;
   static const COMPANIES = _Paths.COMPANIES;
   static const APPLY_JOBS = _Paths.APPLY_JOBS;
+  static const INTERVIEWS = _Paths.INTERVIEWS;
+  static const PASS_CHANGE = _Paths.PASS_CHANGE;
 }
 
 abstract class _Paths {
@@ -27,4 +29,6 @@ abstract class _Paths {
   static const PREV_RES = '/prev-res';
   static const COMPANIES = '/companies';
   static const APPLY_JOBS = '/apply-jobs';
+  static const INTERVIEWS = '/interviews';
+  static const PASS_CHANGE = '/pass-change';
 }

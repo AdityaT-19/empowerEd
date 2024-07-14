@@ -9,6 +9,10 @@ import '../modules/job_list/bindings/job_list_binding.dart';
 import '../modules/job_list/views/job_list_view.dart';
 import '../modules/login/bindings/login_bindings.dart';
 import '../modules/login/views/login_screen.dart';
+import '../modules/pass_change/bindings/pass_change_binding.dart';
+import '../modules/pass_change/bindings/pass_change_binding.dart';
+import '../modules/pass_change/views/pass_change_view.dart';
+import '../modules/pass_change/views/pass_change_view.dart';
 import '../modules/schedule/bindings/schedule_binding.dart';
 import '../modules/schedule/views/schedule_view.dart';
 import '../modules/splash/bindings/splash_bindings.dart';
@@ -56,6 +60,11 @@ class AppPages {
       name: _Paths.SCHEDULE,
       page: () => ScheduleView(cid: Get.arguments['cid']),
       binding: ScheduleBinding(),
+    ),
+    GetPage(
+      name: _Paths.PASS_CHANGE,
+      page: () => PassChangeView(),
+      binding: PassChangeBinding(),
     ),
   ];
 }

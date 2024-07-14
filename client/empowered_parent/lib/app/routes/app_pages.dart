@@ -11,6 +11,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_bindings.dart';
 import '../modules/login/views/login_screen.dart';
+import '../modules/pass_change/bindings/pass_change_binding.dart';
+import '../modules/pass_change/views/pass_change_view.dart';
 import '../modules/prev_res/bindings/prev_res_binding.dart';
 import '../modules/prev_res/views/prev_res_view.dart';
 import '../modules/splash/bindings/splash_bindings.dart';
@@ -63,6 +65,11 @@ class AppPages {
       name: _Paths.COUNSEL,
       page: () => CounselView(),
       binding: CounselBinding(),
+    ),
+    GetPage(
+      name: _Paths.PASS_CHANGE,
+      page: () => const PassChangeView(),
+      binding: PassChangeBinding(),
     ),
   ];
 }

@@ -59,6 +59,8 @@ class DashboardScreen extends StatelessWidget {
                 Icons.add_business_rounded, 'Add Job Listing', Routes.ADD_COMP),
             buildDrawerItem(
                 Icons.event_note, 'Schedule Interview', Routes.JOB_LIST),
+            buildDrawerItem(
+                Icons.key_rounded, 'Change Password', Routes.PASS_CHANGE),
             ListTile(
               leading: Icon(Icons.logout, color: Colors.deepPurple),
               title: Text('Logout', style: TextStyle(color: Colors.deepPurple)),

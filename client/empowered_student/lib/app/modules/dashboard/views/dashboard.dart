@@ -53,7 +53,7 @@ class DashboardScreen extends StatelessWidget {
                 ],
               ),
             ),
-            ...List.generate(6, (index) {
+            ...List.generate(DashboardController.texts.length, (index) {
               return ListTile(
                 leading: Icon(DashboardController.icons[index],
                     color: Colors.deepPurple),
@@ -91,7 +91,7 @@ class DashboardScreen extends StatelessWidget {
               crossAxisSpacing: 16.0,
               childAspectRatio: 1,
             ),
-            itemCount: 6,
+            itemCount: DashboardController.texts.length,
             itemBuilder: (context, index) {
               return Material(
                 color: Colors.transparent,

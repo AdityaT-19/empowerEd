@@ -10,6 +10,8 @@ class DashboardController extends GetxController {
     Icons.shopping_bag_outlined,
     Icons.document_scanner,
     Icons.phone_enabled_rounded,
+    Icons.people_alt_outlined,
+    Icons.key_rounded
   ];
 
   static final List<String> texts = [
@@ -19,6 +21,8 @@ class DashboardController extends GetxController {
     'CTC Predictor',
     'Companies',
     'Apply Online',
+    'Interviews',
+    'Change Password'
   ];
 
   static final List<String> routes = [
@@ -28,5 +32,7 @@ class DashboardController extends GetxController {
     Routes.CTC,
     Routes.COMPANIES,
     Routes.APPLY_JOBS,
+    Routes.INTERVIEWS,
+    Routes.PASS_CHANGE
   ];
 }
