@@ -726,8 +726,14 @@ class AdminController {
     try{
       const {usn}=req.body;
       const result=await db.select().from(students).where(eq(students.usn,usn));
-      const email=result[0].email;
-      console.log(email)
+      if (result.length === 0) {
+        return res.status(404).json({ error: "Student not found" });
+      }
+    
+      // Extract and log the student's email
+      const email = result[0].email;
+      console.log(email);
+    
       const mailHtml = `
         <!DOCTYPE html>
           <html lang="en">
