@@ -56,6 +56,8 @@ class PlacementCoordinatorController {
       const end_time = new Date(req.body.end_time);
       const loc = req.body.location as string;
 
+      console.log(usn, compid, start_time, end_time, loc);
+
       const studentSlots = await db
         .select({
           start_time: interview.start_time,
