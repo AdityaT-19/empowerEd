@@ -31,6 +31,8 @@ class TeacherController {
         .select()
         .from(teachCourse)
         .where(eq(teachCourse.tid, teacherId));
+
+      res.status(200).json({ data: result });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: "Something went wrong!" });
