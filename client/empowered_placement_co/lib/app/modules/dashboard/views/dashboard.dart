@@ -1,4 +1,5 @@
 import 'package:empowered_placement_co/app/routes/app_pages.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -58,6 +59,14 @@ class DashboardScreen extends StatelessWidget {
                 Icons.add_business_rounded, 'Add Job Listing', Routes.ADD_COMP),
             buildDrawerItem(
                 Icons.event_note, 'Schedule Interview', Routes.JOB_LIST),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.deepPurple),
+              title: Text('Logout', style: TextStyle(color: Colors.deepPurple)),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Get.offAllNamed(Routes.LOGIN);
+              },
+            )
           ],
         ),
       ),
