@@ -70,52 +70,54 @@ class _AddCompViewState extends State<AddCompView> {
         title: Text('Add Company'),
         backgroundColor: Colors.deepPurple,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Company Details',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-            ),
-            SizedBox(height: 20),
-            _buildTextField(
-                _companyNameController, 'Company Name', Icons.business),
-            SizedBox(height: 10),
-            _buildTextField(_salaryController, 'Salary', Icons.attach_money),
-            SizedBox(height: 10),
-            _buildTextField(_roleController, 'Role', Icons.work),
-            SizedBox(height: 10),
-            _buildTextField(
-                _jobLocationController, 'Job Location', Icons.location_on),
-            SizedBox(height: 10),
-            _buildTextField(_skillsController, 'Skills', Icons.star),
-            SizedBox(height: 20),
-            Center(
-              child: ElevatedButton(
-                onPressed: _createCompanyCard,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                  textStyle: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Company Details',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple,
                 ),
-                child: Text('Create'),
               ),
-            ),
-            SizedBox(height: 20),
-          ],
+              SizedBox(height: 20),
+              _buildTextField(
+                  _companyNameController, 'Company Name', Icons.business),
+              SizedBox(height: 10),
+              _buildTextField(_salaryController, 'Salary', Icons.attach_money),
+              SizedBox(height: 10),
+              _buildTextField(_roleController, 'Role', Icons.work),
+              SizedBox(height: 10),
+              _buildTextField(
+                  _jobLocationController, 'Job Location', Icons.location_on),
+              SizedBox(height: 10),
+              _buildTextField(_skillsController, 'Skills', Icons.star),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: _createCompanyCard,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    foregroundColor: Colors.white,
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    textStyle: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text('Create'),
+                ),
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
