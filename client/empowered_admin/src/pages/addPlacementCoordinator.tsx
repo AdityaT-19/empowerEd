@@ -22,7 +22,6 @@ import { signOut } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { LogoutOutlined } from '@mui/icons-material';
-
 const drawerWidth: number = 240;
 
 interface USN{
@@ -190,6 +189,7 @@ export default function AddPlacementCoordinator() {
         });
 
         if (response.ok) {
+          
           toast.success('Coordinator created successfully');
           
         } else {

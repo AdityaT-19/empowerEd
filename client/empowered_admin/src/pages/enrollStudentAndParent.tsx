@@ -22,8 +22,7 @@ import { TextField, Button, Select, MenuItem, FormControl, InputLabel, SelectCha
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import auth from '../FirebaseSetup'
-
+import auth from '../FirebaseSetup';
 const drawerWidth: number = 240;
 
 interface AppBarProps extends MuiAppBarProps {

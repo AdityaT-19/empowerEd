@@ -131,7 +131,7 @@ export default function MassUpdateGrade() {
             });
 
             if (enrollResponse.ok) {
-              toast.success('Student and Parent enrolled successfully');
+             toast.success("Students and parent enrolled successfully");
             } else {
               toast.error('Failed to enroll Student and Parent');
             }

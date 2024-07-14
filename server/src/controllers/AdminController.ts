@@ -10,6 +10,7 @@ import {
 } from "../models";
 import db from "../utils/DataSource";
 import { eq, and, or } from "drizzle-orm";
+import contactEmail from "../utils/MailService";
 
 class AdminController {
   async createCourses(req: Request, res: Response) {
@@ -318,6 +319,407 @@ class AdminController {
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: "Something Went Wrong!" });
+    }
+  }
+
+  async sendEmailConformationToTeachers(req:Request,res:Response){
+    try{
+      const {teacherName,email,password}=req.body;
+      const mailHtml = `
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Registration Confirmation</title>
+              <style>
+                /* Reset default styles */
+                body,
+                h1,
+                p {
+                  margin: 0;
+                  padding: 0;
+                }
+                body {
+                  font-family: "Helvetica Neue", Arial, sans-serif;
+                  line-height: 1.6;
+                  background-color: #f2f2f2;
+                  padding: 20px;
+                }
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background-color: #fff;
+                  padding: 30px;
+                  border-radius: 10px;
+                  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  text-align: center;
+                  margin-bottom: 30px;
+                }
+                .header img {
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 10px;
+                }
+                h1 {
+                  color: #673ab7;
+                  text-align: center;
+                  font-size: 24px;
+                  margin-bottom: 20px;
+                }
+                p {
+                  color: #555;
+                  font-size: 16px;
+                  margin-bottom: 20px;
+                }
+                ul {
+                  list-style-type: none;
+                  padding: 0;
+                }
+                li {
+                  margin-bottom: 10px;
+                }
+                .button {
+                  display: inline-block;
+                  background-color: #673ab7;
+                  color: #fff;
+                  text-decoration: none;
+                  padding: 10px 20px;
+                  border-radius: 5px;
+                  margin-top: 20px;
+                  text-align: center;
+                }
+                .button:hover {
+                  background-color: #5a2f99;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 30px;
+                  color: #888;
+                  font-size: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/empowered-ed9ae.appspot.com/o/logo.png?alt=media&token=9bab3fc6-ede0-4dff-aae3-1b46447ca56f" alt="Welcome to EmpowerEd" />
+                </div>
+                <h1>Welcome to EmpowerEd!</h1>
+                <p>Dear ${teacherName},</p>
+                <p>
+                  We are thrilled to welcome you to <strong>EmpowerEd</strong>. You have
+                  successfully registered as a teacher on our platform. You can now access
+                  a wide array of resources and tools to enhance your teaching experience
+                  and connect with your students.
+                </p>
+                <p>Please make a note of your login credentials:</p>
+                <ul>
+                  <li>Email: <strong>${email}</strong></li>
+                  <li>Password: <strong>${password}</strong></li>
+                </ul>
+                <p>
+                  Make sure you change your password after logging in for the first time.
+                </p>
+                <p>
+                  Should you have any questions or need assistance, please feel free to
+                  contact us.
+                </p>
+                <p class="footer">Best regards,<br />EmpowerEd Team</p>
+              </div>
+            </body>
+          </html>
+          
+          `;
+
+          const mail = {
+            to: email,
+            subject: "empowerEd - Teacher Registration Sucessful",
+            html: mailHtml,
+          };
+          // Send mail
+          contactEmail.sendMail(mail, (err, info) => {
+            if (err) {
+              console.log(err);
+              throw new Error("Something went wrong");
+            } else {
+              res.status(201).json({
+                message: "Mail Sent",
+              });
+            }
+          });
+    }catch(e){
+      console.log(e)
+      res.status(400).json({message:"Something Went Wrong!"})
+    }
+  }
+  async sendEmailConformationToParents(req:Request,res:Response){
+    try{
+      const {parentName,email,password}=req.body;
+      const mailHtml = `
+          <!DOCTYPE html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Registration Confirmation</title>
+              <style>
+                /* Reset default styles */
+                body,
+                h1,
+                p {
+                  margin: 0;
+                  padding: 0;
+                }
+                body {
+                  font-family: "Helvetica Neue", Arial, sans-serif;
+                  line-height: 1.6;
+                  background-color: #f2f2f2;
+                  padding: 20px;
+                }
+                .container {
+                  max-width: 600px;
+                  margin: 0 auto;
+                  background-color: #fff;
+                  padding: 30px;
+                  border-radius: 10px;
+                  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+                }
+                .header {
+                  text-align: center;
+                  margin-bottom: 30px;
+                }
+                .header img {
+                  max-width: 100%;
+                  height: auto;
+                  border-radius: 10px;
+                }
+                h1 {
+                  color: #673ab7;
+                  text-align: center;
+                  font-size: 24px;
+                  margin-bottom: 20px;
+                }
+                p {
+                  color: #555;
+                  font-size: 16px;
+                  margin-bottom: 20px;
+                }
+                ul {
+                  list-style-type: none;
+                  padding: 0;
+                }
+                li {
+                  margin-bottom: 10px;
+                }
+                .button {
+                  display: inline-block;
+                  background-color: #673ab7;
+                  color: #fff;
+                  text-decoration: none;
+                  padding: 10px 20px;
+                  border-radius: 5px;
+                  margin-top: 20px;
+                  text-align: center;
+                }
+                .button:hover {
+                  background-color: #5a2f99;
+                }
+                .footer {
+                  text-align: center;
+                  margin-top: 30px;
+                  color: #888;
+                  font-size: 12px;
+                }
+              </style>
+            </head>
+            <body>
+              <div class="container">
+                <div class="header">
+                  <img src="https://firebasestorage.googleapis.com/v0/b/empowered-ed9ae.appspot.com/o/logo.png?alt=media&token=9bab3fc6-ede0-4dff-aae3-1b46447ca56f" alt="Welcome to EmpowerEd" />
+                </div>
+                <h1>Welcome to EmpowerEd!</h1>
+                <p>Dear ${parentName},</p>
+                <p>
+                  We are delighted to welcome you to <strong>EmpowerEd</strong>. You have
+                  successfully registered as a parent on our platform. You can now stay
+                  updated on your child's academic progress and access valuable resources
+                  to support their educational journey.
+                </p>
+                <p>Please make a note of your login credentials:</p>
+                <ul>
+                  <li>Email: <strong>${email}</strong></li>
+                  <li>Password: <strong>${password}</strong></li>
+                </ul>
+                <p>
+                  Make sure you change your password after logging in for the first time.
+                </p>
+                <p>
+                  Should you have any questions or need assistance, please feel free to
+                  contact us.
+                </p>
+                <p class="footer">Best regards,<br />EmpowerEd Team</p>
+              </div>
+            </body>
+          </html>
+          
+          `;
+
+          const mail = {
+            to: email,
+            subject: "empowerEd - Parent Registration Sucessful",
+            html: mailHtml,
+          };
+          // Send mail
+          contactEmail.sendMail(mail, (err, info) => {
+            if (err) {
+              console.log(err);
+              throw new Error("Something went wrong");
+            } else {
+              res.status(201).json({
+                message: "Mail Sent",
+              });
+            }
+          });
+    }catch(e){
+      console.log(e)
+      res.status(400).json({message:"Something Went Wrong!"})
+    }
+  }
+  async sendEmailConformationToStudents(req:Request,res:Response){
+    try{
+      const {studentName,email,password}=req.body;
+      const mailHtml = `
+        <!DOCTYPE html>
+        <html lang="en">
+          <head>
+            <meta charset="UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <title>Registration Confirmation</title>
+            <style>
+              /* Reset default styles */
+              body,
+              h1,
+              p {
+                margin: 0;
+
+                padding: 0;
+              }
+              body {
+                font-family: "Helvetica Neue", Arial, sans-serif;
+                line-height: 1.6;
+                background-color: #f2f2f2;
+                padding: 20px;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #fff;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+              }
+              .header {
+                text-align: center;
+                margin-bottom: 30px;
+              }
+              .header img {
+                max-width: 100%;
+                height: auto;
+                border-radius: 10px;
+              }
+              h1 {
+                color: #673ab7;
+                text-align: center;
+                font-size: 24px;
+                margin-bottom: 20px;
+              }
+              p {
+                color: #555;
+                font-size: 16px;
+                margin-bottom: 20px;
+              }
+              ul {
+                list-style-type: none;
+                padding: 0;
+              }
+              li {
+                margin-bottom: 10px;
+              }
+              .button {
+                display: inline-block;
+                background-color: #673ab7;
+                color: #fff;
+                text-decoration: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                margin-top: 20px;
+                text-align: center;
+              }
+              .button:hover {
+                background-color: #5a2f99;
+              }
+              .footer {
+                text-align: center;
+                margin-top: 30px;
+                color: #888;
+                font-size: 12px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <img src="https://firebasestorage.googleapis.com/v0/b/empowered-ed9ae.appspot.com/o/logo.png?alt=media&token=9bab3fc6-ede0-4dff-aae3-1b46447ca56f" alt="Welcome to EmpowerEd" />
+              </div>
+              <h1>Welcome to EmpowerEd!</h1>
+              <p>Dear ${studentName},</p>
+              <p>
+                We are delighted to inform you that you have successfully registered on
+                our platform <strong>EmpowerEd</strong>. You can now access a wealth of
+                resources and services tailored to support your academic journey and
+                career.
+              </p>
+              <p>Please make a note of your login credentials:</p>
+              <ul>
+                <li>Email: <strong>${email}</strong></li>
+                <li>Password: <strong>${password}</strong></li>
+              </ul>
+              <p>
+                Make sure you change your password after logging in for the first time.
+              </p>
+              <p>
+                Should you have any questions or need assistance, please feel free to
+                contact us.
+              </p>
+              <p class="footer">Best regards,<br />EmpowerEd Team</p>
+            </div>
+          </body>
+        </html>
+          
+          `;
+
+          const mail = {
+            to: email,
+            subject: "empowerEd - Student Registration Sucessful",
+            html: mailHtml,
+          };
+          // Send mail
+          contactEmail.sendMail(mail, (err, info) => {
+            if (err) {
+              console.log(err);
+              throw new Error("Something went wrong");
+            } else {
+              res.status(201).json({
+                message: "Mail Sent",
+              });
+            }
+          });
+    }catch(e){
+      console.log(e)
+      res.status(400).json({message:"Something Went Wrong!"})
     }
   }
 }
