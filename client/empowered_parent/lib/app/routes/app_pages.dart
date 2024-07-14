@@ -68,7 +68,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PASS_CHANGE,
-      page: () => const PassChangeView(),
+      page: () =>  PassChangeView(),
       binding: PassChangeBinding(),
     ),
   ];
