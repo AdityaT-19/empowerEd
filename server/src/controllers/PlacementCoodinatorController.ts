@@ -107,6 +107,7 @@ class PlacementCoordinatorController {
         .from(company)
         .where(eq(company.id, compid));
       const temp = new PlacementCoordinatorController();
+      console.log(compName[0].name);
       const icalData = temp.CreateIcalFile({
         id: result[0].id,
         compName: compName[0].name,
@@ -161,7 +162,7 @@ class PlacementCoordinatorController {
               </div>
               <div class="content">
                   <p>Dear ${usn},</p>
-                  <p>Your interview for the company ${compName} has been scheduled as follows:</p>
+                  <p>Your interview for the company ${compName[0].name} has been scheduled as follows:</p>
                   <ul>
                       <li><strong>Start:</strong> ${start_time}</li>
                       <li><strong>End:</strong> ${end_time}</li>

@@ -3,7 +3,7 @@ import { TeacherController } from "../controllers";
 
 const router = Router();
 
-router.get("/", TeacherController.getCourses);
+router.get("/courses/id", TeacherController.getCourses);
 router.get("/:id", TeacherController.getTeacherById);
 router.get("/studentReports/:usn", TeacherController.getStudentReports);
 

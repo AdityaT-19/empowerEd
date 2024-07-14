@@ -1,13 +1,10 @@
+import 'package:empowered_teacher/app/modules/attendance/controllers/attendance_controller.dart';
 import 'package:empowered_teacher/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AttendanceView extends StatelessWidget {
-  final List<Map<String, String>> courses = [
-    {'courseCode': 'CSE101', 'section': 'A'},
-    {'courseCode': 'ECE202', 'section': 'B'},
-    {'courseCode': 'ME303', 'section': 'C'},
-  ];
+  final attendanceController = Get.find<AttendanceController>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +15,11 @@ class AttendanceView extends StatelessWidget {
         backgroundColor: Colors.deepPurple, // Purple app bar
       ),
       body: ListView.builder(
-        itemCount: courses.length,
+        itemCount: attendanceController.courses.length,
         itemBuilder: (context, index) {
           return CourseCard(
-            courseCode: courses[index]['courseCode']!,
-            section: courses[index]['section']!,
+            courseCode: attendanceController.courses[index]['courseCode']!,
+            section: attendanceController.courses[index]['section']!,
           );
         },
       ),

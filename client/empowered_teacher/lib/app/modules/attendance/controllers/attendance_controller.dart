@@ -3,7 +3,11 @@ import 'package:get/get.dart';
 class AttendanceController extends GetxController {
   //TODO: Implement AttendanceController
 
-  final count = 0.obs;
+  final List<Map<String, String>> courses = [
+    {'courseCode': 'CSE101', 'section': 'A'},
+    {'courseCode': 'ECE202', 'section': 'B'},
+    {'courseCode': 'ME303', 'section': 'C'},
+  ];
   @override
   void onInit() {
     super.onInit();
@@ -18,6 +22,4 @@ class AttendanceController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
-  void increment() => count.value++;
 }

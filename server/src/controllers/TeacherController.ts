@@ -26,8 +26,11 @@ class TeacherController {
 
   async getCourses(req: Request, res: Response) {
     try {
-      const result = await db.select().from(courses);
-      res.status(200).json({ data: result });
+      const teacherId = req.params.id;
+      const result = await db
+        .select()
+        .from(teachCourse)
+        .where(eq(teachCourse.tid, teacherId));
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: "Something went wrong!" });
