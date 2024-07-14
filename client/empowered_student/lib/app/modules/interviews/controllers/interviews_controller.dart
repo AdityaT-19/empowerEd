@@ -11,13 +11,6 @@ class InterviewsController extends GetxController {
       'date': '2024-07-20',
       'location': 'Room 101',
     },
-    {
-      'company': 'Company B',
-      'startTime': '2:00 PM',
-      'endTime': '3:00 PM',
-      'date': '2024-07-22',
-      'location': 'Room 202',
-    },
   ];
   //TODO: Implement InterviewsController
 
