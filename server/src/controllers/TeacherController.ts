@@ -66,18 +66,37 @@ class TeacherController {
     try {
       const teacher_course = req.body;
       const courseDetails = await db
+    .select()
+    .from(courses)
+    .where(eq(courses.cid, teacher_course.cid));
+
+  if (courseDetails.length === 0) {
+    return res.status(404).json({ error: "Course not found" });
+  }
+
+  const course = courseDetails[0];
+
+  // Fetch student data related to the specific course
+  const studentsResult = await db
         .select()
-        .from(courses)
-        .where(eq(courses.cid, teacher_course.cid));
-      const result = await db
-        .select()
-        .from(students).fullJoin(studCourse,eq(studCourse.usn,students.usn)).where(
+        .from(students)
+        .fullJoin(studCourse, eq(studCourse.usn, students.usn))
+        .where(
           and(
-            eq(students.sem, courseDetails[0].semester),
+            eq(studCourse.cid, teacher_course.cid),
+            eq(students.sem, course.semester),
             eq(students.section, teacher_course.section)
           )
         );
-      res.status(200).json({ data: result });
+
+      // Combine results into a single object
+      const response = {
+        courseDetails: course,
+        students: studentsResult,
+      };
+
+       
+      res.status(200).json({ data: response });
     } catch (e) {
       console.log(e);
       res.status(400).json({ message: "Something Went Wrong!" });
