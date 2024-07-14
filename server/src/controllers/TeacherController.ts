@@ -62,6 +62,56 @@ class TeacherController {
     }
   }
 
+  async fetchStudentCie(req:Request,res:Response){
+    try {
+      const teacher_course = req.body;
+      const courseDetails = await db
+    .select()
+    .from(courses)
+    .where(eq(courses.cid, teacher_course.cid));
+
+  if (courseDetails.length === 0) {
+    return res.status(404).json({ error: "Course not found" });
+  }
+
+  const course = courseDetails[0];
+
+  // Fetch student data related to the specific course
+  const studentsResult = await db
+        .select()
+        .from(students)
+        .fullJoin(studCourse, eq(studCourse.usn, students.usn))
+        .where(
+          and(
+            eq(studCourse.cid, teacher_course.cid),
+            eq(students.sem, course.semester),
+            eq(students.section, teacher_course.section)
+          )
+        );
+
+      let response=[];
+      for(let i=0;i<studentsResult.length;i++){
+        if(studentsResult[i].students&&studentsResult[i].stud_course){
+        let newObj={
+          "usn":studentsResult[i].students?.usn,
+          "name":studentsResult[i].students?.name,
+          "sem":studentsResult[i].students?.sem,
+          "section":studentsResult[i].students?.section,
+          "ia1":studentsResult[i].stud_course?.ia1,
+          "ia2":studentsResult[i].stud_course?.ia2,
+          "ia3":studentsResult[i].stud_course?.ia3
+        };
+        response.push(newObj);
+      }
+      }
+       
+      res.status(200).json({ data: response });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ message: "Something Went Wrong!" });
+    }
+  }
+
   async markAttendance(req: Request, res: Response) {
     try {
       const { teacher_course, studentList } = req.body;

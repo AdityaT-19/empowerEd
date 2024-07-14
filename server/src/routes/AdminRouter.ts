@@ -29,6 +29,12 @@ router.post("/addAdditionalCourses", AdminController.addAdditionalCourses);
 
 router.post("/addPlacementCoodinator", AdminController.addPlacementCoodinator);
 
+router.post("/sendMailToTeacher",AdminController.sendEmailConformationToTeachers)
+
+router.post("/sendMailToParent",AdminController.sendEmailConformationToParents)
+
+router.post("/sendMailToStudent",AdminController.sendEmailConformationToStudents)
+
 router.patch(
   "/updateGradeStudentAndCid",
   AdminController.updateGradeStudentAndCid

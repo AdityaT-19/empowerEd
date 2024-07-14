@@ -193,7 +193,6 @@ export default function AddTeachers() {
         });
 
         if (response.ok) {
-
           toast.success('Teacher created successfully');
           
         } else {
