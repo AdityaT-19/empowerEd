@@ -193,7 +193,22 @@ export default function AddTeachers() {
         });
 
         if (response.ok) {
+          let r=await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/sendMailToTeacher', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              "teacherName":name,
+              "email":email,
+              "password":tid
+            })
+          });
+          if(r.ok){
           toast.success('Teacher created successfully');
+          }else{
+            toast.error('Something Went Wrong')
+          }
           
         } else {
           toast.error('Failed to create teacher');
