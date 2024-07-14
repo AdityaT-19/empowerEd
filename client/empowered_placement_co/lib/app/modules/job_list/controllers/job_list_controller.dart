@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class JobListController extends GetxController {
-  static final List<Map<String, dynamic>> companies = [
+  final isLoading = false.obs;
+  final List<Map<String, dynamic>> companies = [
     {
       'name': 'Google',
       'role': 'Software Engineer',
       'ctc': '30 LPA',
       'location': 'Mountain View, CA',
-      'inhand': '25 LPA',
       'technicalExpertise': 'Flutter, Dart, Firebase'
     },
     {
@@ -15,7 +18,6 @@ class JobListController extends GetxController {
       'role': 'Data Scientist',
       'ctc': '28 LPA',
       'location': 'Seattle, WA',
-      'inhand': '23 LPA',
       'technicalExpertise': 'Python, ML, AWS'
     },
     {
@@ -23,7 +25,6 @@ class JobListController extends GetxController {
       'role': 'Product Manager',
       'ctc': '25 LPA',
       'location': 'Redmond, WA',
-      'inhand': '21 LPA',
       'technicalExpertise': 'Agile, Scrum, UX'
     },
     {
@@ -31,7 +32,6 @@ class JobListController extends GetxController {
       'role': 'Hardware Engineer',
       'ctc': '27 LPA',
       'location': 'Cupertino, CA',
-      'inhand': '22 LPA',
       'technicalExpertise': 'Verilog, VHDL, PCB Design'
     },
     {
@@ -39,7 +39,6 @@ class JobListController extends GetxController {
       'role': 'UI/UX Designer',
       'ctc': '22 LPA',
       'location': 'Menlo Park, CA',
-      'inhand': '19 LPA',
       'technicalExpertise': 'Sketch, Figma, Adobe XD'
     },
     {
@@ -47,7 +46,6 @@ class JobListController extends GetxController {
       'role': 'Machine Learning Engineer',
       'ctc': '32 LPA',
       'location': 'Los Gatos, CA',
-      'inhand': '28 LPA',
       'technicalExpertise': 'Python, TensorFlow, Keras'
     },
   ];
@@ -55,8 +53,30 @@ class JobListController extends GetxController {
 
   final count = 0.obs;
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
+    await getCompanies();
+  }
+
+  Future<void> getCompanies() async {
+    isLoading.value = true;
+    final url = Uri.parse(
+        'https://empowered-dw0m.onrender.com/api/v1/student/getCompanies');
+    final res = await http.get(url);
+    final body = jsonDecode(res.body)['data'];
+    companies.clear();
+    print(body);
+    body.forEach((company) {
+      companies.add({
+        'cid': company['id'],
+        'name': company['name'],
+        'role': company['jobRole'],
+        'ctc': company['ctc'],
+        'location': company['jobLocation'],
+        'technicalExpertise': company['skills']
+      });
+    });
+    isLoading.value = false;
   }
 
   @override

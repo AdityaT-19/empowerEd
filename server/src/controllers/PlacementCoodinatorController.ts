@@ -54,7 +54,7 @@ class PlacementCoordinatorController {
       const compid = req.body.compid as number;
       const start_time = new Date(req.body.start_time);
       const end_time = new Date(req.body.end_time);
-      const loaction = req.body.location as string;
+      const Loaction = req.body.location as string;
 
       const studentSlots = await db
         .select({
@@ -62,9 +62,7 @@ class PlacementCoordinatorController {
           end_time: interview.end_time,
         })
         .from(interview)
-        .where(
-          and(eq(interview.usn, usn), gt(interview.start_time, new Date()))
-        );
+        .where(eq(interview.usn, usn));
 
       const companySlots = await db
         .select({
@@ -91,17 +89,6 @@ class PlacementCoordinatorController {
           break;
         }
       }
-      for (let i = 0; i < companySlots.length; i++) {
-        if (
-          (start_time >= companySlots[i].start_time &&
-            start_time <= companySlots[i].end_time) ||
-          (end_time >= companySlots[i].start_time &&
-            end_time <= companySlots[i].end_time)
-        ) {
-          flag = true;
-          break;
-        }
-      }
 
       if (flag) {
         res.status(400).json({ message: "Slot is already booked" });
@@ -122,7 +109,7 @@ class PlacementCoordinatorController {
         id: result[0].id,
         compName: compName[0].name,
         usn: usn,
-        location: loaction,
+        location: Loaction,
         start_time: start_time,
         end_time: end_time,
       });
@@ -176,7 +163,7 @@ class PlacementCoordinatorController {
                   <ul>
                       <li><strong>Start:</strong> ${start_time}</li>
                       <li><strong>End:</strong> ${end_time}</li>
-                      <li><strong>Venue:</strong> ${location}</li>
+                      <li><strong>Venue:</strong> ${Location}</li>
                   </ul>
                   <p>Please arrive at the venue 15 minutes early and bring your resume, a valid ID, and any other necessary documents.</p>
                   <p>If you have any questions, feel free to contact us.</p>

@@ -1,19 +1,35 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class ScheduleController extends GetxController {
-  static final List<String> dummyUsns = [
+  final isLoading = false.obs;
+
+  final List<String> dummyUsns = [
     'USN001',
-    'USN002',
-    'USN003',
-    'USN004',
-    'USN005'
   ];
   //TODO: Implement ScheduleController
 
-  final count = 0.obs;
   @override
-  void onInit() {
+  void onInit() async {
+    print(Get.arguments['cid']);
     super.onInit();
+    await getUsns();
+  }
+
+  Future<void> getUsns() async {
+    isLoading.value = true;
+    final cid = Get.arguments['cid'];
+    final url = Uri.parse(
+        'https://empowered-dw0m.onrender.com/api/v1/placement/getStudentsByCompany/$cid');
+    final res = await http.get(url);
+    final body = jsonDecode(res.body)['data'];
+    dummyUsns.clear();
+    body.forEach((usn) {
+      dummyUsns.add(usn['usn']);
+    });
+    isLoading.value = false;
   }
 
   @override
@@ -25,6 +41,4 @@ class ScheduleController extends GetxController {
   void onClose() {
     super.onClose();
   }
-
-  void increment() => count.value++;
 }

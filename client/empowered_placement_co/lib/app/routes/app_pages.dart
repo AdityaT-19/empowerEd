@@ -54,7 +54,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.SCHEDULE,
-      page: () => ScheduleView(),
+      page: () => ScheduleView(cid: Get.arguments['cid']),
       binding: ScheduleBinding(),
     ),
   ];

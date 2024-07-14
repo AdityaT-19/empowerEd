@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   //TODO: Implement LoginController
@@ -7,15 +10,6 @@ class AuthController extends GetxController {
   RxBool isLogged = true.obs;
   @override
   void onInit() async {
-    FirebaseAuth.instance.authStateChanges().listen((event) async {
-      if (event == null) {
-        isLogged.value = true;
-        Get.offAllNamed('/dashboard');
-      } else {
-        isLogged.value = false;
-      }
-    });
-
     super.onInit();
     //create a dummy  patient based on the model
   }
@@ -35,7 +29,25 @@ class AuthController extends GetxController {
       //Get.offAllNamed('/dashboard');
       await authInstance.signInWithEmailAndPassword(
           email: email, password: password);
-      Get.offAllNamed('/dashboard');
+      final user = FirebaseAuth.instance.currentUser;
+      print(user?.displayName);
+      print(user?.email);
+      print(user?.photoURL);
+      if (user?.displayName != null && user?.displayName != 'teacher') {
+        Get.snackbar('Error', 'You are not a Teacher',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white);
+        await authInstance.signOut();
+      } else {
+        Get.snackbar('Success', 'Login Successful',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white);
+        final sharedPreferences = await SharedPreferences.getInstance();
+        sharedPreferences.setString('tid', user?.photoURL ?? '');
+        Get.offAllNamed('/dashboard');
+      }
       //Get.offAllNamed('/dashboard');
       //fetch from custom backend
     } on FirebaseAuthException catch (e) {

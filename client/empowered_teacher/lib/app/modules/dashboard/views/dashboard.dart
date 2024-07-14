@@ -1,4 +1,5 @@
 import 'package:empowered_teacher/app/routes/app_pages.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -60,6 +61,15 @@ class DashboardScreen extends StatelessWidget {
             buildDrawerItem(Icons.school, 'Counselling', Routes.COUNSEL),
             buildDrawerItem(
                 Icons.file_upload, 'Bulk Update', Routes.BULK_UPDATE),
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.deepPurple),
+              title: const Text('Logout',
+                  style: TextStyle(color: Colors.deepPurple)),
+              onTap: () async {
+                await FirebaseAuth.instance.signOut();
+                Get.offAllNamed(Routes.LOGIN);
+              },
+            ),
           ],
         ),
       ),
