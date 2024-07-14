@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:empowered_teacher/app/modules/update_cie/controllers/update_cie_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class UpdateCieView extends StatefulWidget {
   final String courseCode;
@@ -13,24 +17,7 @@ class UpdateCieView extends StatefulWidget {
 
 class _UpdateCieViewState extends State<UpdateCieView> {
   // Mock data for students and initial IA marks
-  List<StudentModel> students = [
-    StudentModel(name: 'John Doe', usn: '12345ABC', ia1: 40, ia2: 35, ia3: 42),
-    StudentModel(
-        name: 'Jane Smith', usn: '67890XYZ', ia1: 38, ia2: 39, ia3: 45),
-    StudentModel(
-        name: 'Alice Johnson', usn: '11223DEF', ia1: 42, ia2: 36, ia3: 40),
-  ];
-
-  void _submitAttendance() {
-    // Perform submission logic here
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Marks updated successfully'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.purpleAccent,
-      ),
-    );
-  }
+  final updateCieController = Get.find<UpdateCieController>();
 
   @override
   Widget build(BuildContext context) {
@@ -41,58 +28,79 @@ class _UpdateCieViewState extends State<UpdateCieView> {
         foregroundColor: Colors.white,
         backgroundColor: Colors.deepPurple,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${widget.courseCode} - Section ${widget.section}',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Expanded(
-              child: ListView.builder(
-                itemCount: students.length,
-                itemBuilder: (context, index) {
-                  return StudentCard(
-                    student: students[index],
-                    onUpdate: (StudentModel updatedStudent) {
-                      setState(() {
-                        // Update the student model in the list
-                        students[index] = updatedStudent;
-                      });
-                    },
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Center(
-              child: ElevatedButton(
-                onPressed: _submitAttendance,
-                child: Text('Submit',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                style: ElevatedButton.styleFrom(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 32.0),
-                  backgroundColor: Colors.deepPurple,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  elevation: 4,
-                  shadowColor: Colors.deepPurple.withOpacity(0.4),
-                  textStyle: TextStyle(fontSize: 18.0),
+      body: Obx(
+        () => updateCieController.isLoading.value
+            ? Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${widget.courseCode} - Section ${widget.section}',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: updateCieController.students.length,
+                        itemBuilder: (context, index) {
+                          return StudentCard(
+                            student: updateCieController.students[index],
+                            onUpdate: (StudentModel updatedStudent) async {
+                              final cid = widget.courseCode;
+                              final usn = updatedStudent.usn;
+                              final ia1 = updatedStudent.ia1;
+                              final ia2 = updatedStudent.ia2;
+                              final ia3 = updatedStudent.ia3;
+
+                              final body = jsonEncode({
+                                'cid': cid,
+                                'usn': usn,
+                                'ia1': ia1,
+                                'ia2': ia2,
+                                'ia3': ia3,
+                              });
+
+                              final headers = {
+                                'Content-Type': 'application/json',
+                              };
+
+                              final url = Uri.parse(
+                                  'https://empowered-dw0m.onrender.com/api/v1/teacher/updateMarks');
+
+                              final response = await http.patch(url,
+                                  headers: headers, body: body);
+
+                              print(response.body);
+                              if (response.statusCode == 201) {
+                                setState(() {
+                                  // Update the student model in the list
+                                  updateCieController.students[index] =
+                                      updatedStudent;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                        Text('Marks updated successfully '),
+                                    duration: Duration(seconds: 2),
+                                    backgroundColor: Colors.purpleAccent,
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                  ],
                 ),
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -124,16 +132,10 @@ class _StudentCardState extends State<StudentCard> {
     );
   }
 
-  void _updateMarks() {
+  void _updateMarks() async {
     // Call onUpdate function with updated student model
-    widget.onUpdate(_editedStudent);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Marks updated successfully for ${widget.student.name}'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.purpleAccent,
-      ),
-    );
+
+    await widget.onUpdate(_editedStudent);
   }
 
   @override

@@ -1,5 +1,10 @@
+import 'dart:convert';
+
 import 'package:empowered_teacher/app/modules/update_att/controllers/update_att_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class UpdateAttView extends StatefulWidget {
   final String courseCode;
@@ -14,6 +19,8 @@ class UpdateAttView extends StatefulWidget {
 class _UpdateAttViewState extends State<UpdateAttView> {
   DateTime? selectedDate;
   TimeOfDay? selectedTime;
+  final UpdateAttController updateAttController =
+      Get.find<UpdateAttController>();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -41,14 +48,71 @@ class _UpdateAttViewState extends State<UpdateAttView> {
     }
   }
 
-  void _submitAttendance() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Attendance updated successfully'),
-        duration: Duration(seconds: 2),
-        backgroundColor: Colors.purpleAccent,
-      ),
-    );
+  void _submitAttendance() async {
+    if (selectedDate == null || selectedTime == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please select date and time'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+      return;
+    }
+
+    final prefs = await SharedPreferences.getInstance();
+    final tid = prefs.getString('tid');
+    final cid = widget.courseCode;
+    final section = widget.section;
+    final date = selectedDate!.toLocal().toString().split(' ')[0];
+    final time = selectedTime!.toString().split('(')[1].split(')')[0];
+
+    final data = <Map<String, dynamic>>[
+      for (int i = 0; i < updateAttController.students.length; i++)
+        {
+          'usn': updateAttController.students[i]['usn'],
+          'present': updateAttController.attendance[i].value,
+          'date': date,
+          'hour': time,
+        }
+    ];
+
+    final body = jsonEncode({
+      'teacher_course': {
+        'tid': tid,
+        'cid': cid,
+        'section': section,
+      },
+      'studentList': data,
+    });
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final url = Uri.parse(
+        'https://empowered-dw0m.onrender.com/api/v1/teacher/markAttendance');
+
+    final res = await http.post(url, headers: headers, body: body);
+    print(res.body);
+
+    if (res.statusCode == 201) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Attendance updated successfully'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.purpleAccent,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to update attendance'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
   }
 
   @override
@@ -121,14 +185,54 @@ class _UpdateAttViewState extends State<UpdateAttView> {
             ),
             SizedBox(height: 16.0),
             Expanded(
-              child: ListView.builder(
-                itemCount: UpdateAttController.students.length,
-                itemBuilder: (context, index) {
-                  return StudentCard(
-                    studentName: UpdateAttController.students[index]['name']!,
-                    usn: UpdateAttController.students[index]['usn']!,
-                  );
-                },
+              child: Obx(
+                () => updateAttController.isLoading.value
+                    ? Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: updateAttController.students.length,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            margin: EdgeInsets.all(8.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15.0),
+                            ),
+                            elevation: 4,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              child: ListTile(
+                                leading: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      updateAttController.students[index]
+                                          ['name']!,
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.deepPurple),
+                                    ),
+                                    Text(
+                                        updateAttController.students[index]
+                                            ['usn']!,
+                                        style: TextStyle(
+                                            color: Colors.deepPurple[300])),
+                                  ],
+                                ),
+                                trailing: Obx(() => Checkbox(
+                                      value: updateAttController
+                                          .attendance[index].value,
+                                      onChanged: (bool? value) {
+                                        updateAttController
+                                            .attendance[index].value = value!;
+                                      },
+                                      activeColor: Colors.deepPurple,
+                                    )),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
               ),
             ),
             SizedBox(height: 16.0),
@@ -152,57 +256,6 @@ class _UpdateAttViewState extends State<UpdateAttView> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class StudentCard extends StatefulWidget {
-  final String studentName;
-  final String usn;
-
-  StudentCard({required this.studentName, required this.usn});
-
-  @override
-  _StudentCardState createState() => _StudentCardState();
-}
-
-class _StudentCardState extends State<StudentCard> {
-  bool isChecked = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: EdgeInsets.all(8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      elevation: 4,
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: ListTile(
-          leading: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                widget.studentName,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.deepPurple),
-              ),
-              Text(widget.usn, style: TextStyle(color: Colors.deepPurple[300])),
-            ],
-          ),
-          trailing: Checkbox(
-            value: isChecked,
-            onChanged: (bool? value) {
-              setState(() {
-                isChecked = value ?? false;
-              });
-            },
-            activeColor: Colors.deepPurple,
-          ),
         ),
       ),
     );
