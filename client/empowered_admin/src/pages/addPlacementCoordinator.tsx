@@ -189,8 +189,20 @@ export default function AddPlacementCoordinator() {
         });
 
         if (response.ok) {
-          
+          const r=await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/sendMailToPlacementCoordinator', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"usn":dept})
+          });
+          await r.json();
+          console.log(r)
+          if(r.ok){
           toast.success('Coordinator created successfully');
+          }else{
+            toast.error('Mail Sending Failed')
+          }
           
         } else {
           toast.error('Failed to create coordinator');

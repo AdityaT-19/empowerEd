@@ -166,6 +166,36 @@ function CreateStudentForm({ }: { handleSubmit: (event: React.FormEvent<HTMLForm
           });
   
           if (response.ok) {
+            let r=await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/sendMailToStudent', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                "studentName":studentData.name,
+                "email":studentData.email,
+                "password":studentData.usn
+              })
+            });
+            if(r.ok){
+              let r1=await fetch('https://empowered-dw0m.onrender.com/api/v1/admin/sendMailToStudent', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  "studentName":parentData.name,
+                  "email":parentData.email,
+                  "password":parentData.phNo
+                })
+              });
+              if(!r1.ok){
+                toast.error("Mail Sending Failed")
+              }
+
+            }else{
+              toast.error('Mail sending failed')
+            }
             toast.success('Student and Parent enrolled successfully');
           } else {
             toast.error('Failed to enroll Student and Parent');

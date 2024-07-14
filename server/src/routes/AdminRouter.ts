@@ -35,6 +35,8 @@ router.post("/sendMailToParent",AdminController.sendEmailConformationToParents)
 
 router.post("/sendMailToStudent",AdminController.sendEmailConformationToStudents)
 
+router.post("/sendMailToPlacementCoordinator",AdminController.sendEmailConformationToPlacementCoordinator)
+
 router.patch(
   "/updateGradeStudentAndCid",
   AdminController.updateGradeStudentAndCid
