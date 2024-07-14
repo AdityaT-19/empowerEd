@@ -62,6 +62,28 @@ class TeacherController {
     }
   }
 
+  async fetchStudentCie(req:Request,res:Response){
+    try {
+      const teacher_course = req.body;
+      const courseDetails = await db
+        .select()
+        .from(courses)
+        .where(eq(courses.cid, teacher_course.cid));
+      const result = await db
+        .select()
+        .from(students).fullJoin(studCourse,eq(studCourse.usn,students.usn)).where(
+          and(
+            eq(students.sem, courseDetails[0].semester),
+            eq(students.section, teacher_course.section)
+          )
+        );
+      res.status(200).json({ data: result });
+    } catch (e) {
+      console.log(e);
+      res.status(400).json({ message: "Something Went Wrong!" });
+    }
+  }
+
   async markAttendance(req: Request, res: Response) {
     try {
       const { teacher_course, studentList } = req.body;
