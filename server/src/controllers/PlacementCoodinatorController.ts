@@ -52,8 +52,8 @@ class PlacementCoordinatorController {
     try {
       const usn = req.body.usn as string;
       const compid = req.body.compid as number;
-      const start_time = new Date(req.body.start_time);
-      const end_time = new Date(req.body.end_time);
+      const start_time = new Date(`${req.body.start_time}+05:30`);
+      const end_time = new Date(`${req.body.end_time}+05:30`);
       const loc = req.body.location as string;
 
       console.log(usn, compid, start_time, end_time, loc);
